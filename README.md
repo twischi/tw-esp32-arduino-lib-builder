@@ -12,7 +12,7 @@ It contains modifications in the manner to ...
 ## To used with macOS...
 ### It is tested with:
 * macOS Moneytary running on (Intel)
-* macOS Venture   running on (ARM/M1)
+* macOS Ventura   running on (ARM/M1)
 
 ### Install needed tools on macOS:
 * Install [Xcode](https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://apps.apple.com/us/app/xcode/id497799835%3Fmt%3D12&ved=2ahUKEwjwn4vkzqiGAxUahf0HHTb6CXQQFnoECBMQAQ&usg=AOvVaw2fEvMbfRtGhB4SPHYB54NX) as it provide the needed ***build*** cababilities
