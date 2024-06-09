@@ -5,7 +5,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 if [ -z $SH_ROOT ]; then
     source ./tools/config.sh
-    source ./prettiyfiHelpers.sh
+    source ./tools/prettiyfiHelpers.sh
     # Import all environment variables from file
     oneUpDir=$(realpath $(pwd)/../) # DIR above the current directory
     echo "Load: $oneUpDir/env_variables-afterBuild-Debug.sh" 
