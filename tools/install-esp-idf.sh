@@ -32,7 +32,7 @@ if [ "$IDF_TAG" ]; then
 	echo -e "   checkout tags/$IDF_TAG of: $(shortFP $IDF_PATH)"
     git -C "$IDF_PATH" checkout "tags/$IDF_TAG" --quiet
     idf_was_installed="1"
-# Case when the TAG is set
+# Case when the COMMIT is set
 elif [ "$IDF_COMMIT" ]; then
 	echo -e "   checkout $IDF_COMMIT of: $(shortFP $IDF_PATH)"
     git -C "$IDF_PATH" checkout "$IDF_COMMIT" --quiet
@@ -74,7 +74,7 @@ fi
 # SETUP ESP-IDF ENV
 #----------------------------------
 echo -e "...Setting up ESP-IDF Environment"
-echo -e "   with:$eUS $IDF_PATH/export.sh$eNO"
+echo -e "   with: $(shortFP $IDF_PATH/export.sh)"
 if [ $IDF_InstallSilent -eq 1 ] ; then
 	[ $IS_Shown -eq 0 ] && echo -e "  $eTG Silent install$eNO - don't use this as long as your not sure install goes without errors!" && IS_Shown=1  
 	source $IDF_PATH/export.sh > /dev/null
