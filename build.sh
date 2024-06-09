@@ -524,11 +524,12 @@ fi
 # ******  Add components version info    *******
 # **********************************************
 echo -e '----------------------------- 4) Create Version Info ------------------------------'
+[ $BTI_Shown -eq 0 ] && echo -e "  $eTG Silent Info creation$eNO - don't use this as long as your not sure creation goes without errors!\n" && BTI_Shown=1
 ################################
 # Create NEW Version Info-File
 ################################
-echo -e   '-- 1) Create NEW Version Info-File (one file, not Target-specific!)'
-echo -e   "   ...at: $(shortFP $AR_TOOLS/esp32-arduino-libs/versions.txt)"
+echo -e   "-- 1) Create NEW Version Info-File (one file, not Target-specific!)"
+echo -e   "   ...at: $(shortFP $(realpath "$AR_TOOLS/esp32-arduino-libs")/)$eTG"versions.txt"$eNO"
 rm -rf "$AR_TOOLS/esp32-arduino-libs/versions.txt"
 # -------------------------
 # Write lib-builder version
@@ -586,16 +587,17 @@ done
 # #########################################
 if [ "$BUILD_TYPE" = "all" ]; then
     # - package_esp32_index.template.json
-    echo -e "\n-- 2) Generate $eUS'package_esp32_index.template.json'$eNO (One file, not Target-specific!)"
-    echo -e   "   ...to: $(shortFP $OUT_FOLDER/package_esp32_index.template.json)"
+    echo -e "\n-- 2) Generate Package Infos (One file, not Target-specific!) with >    $eUS/tools/gen_tools_json.py$eNO"
+    echo -e   "   ...   a) Common Package Infos"
+    echo -e   "   ...      at: $(shortFP $(realpath $AR_OUT)/)$eTG"package_esp32_index.template.json"$eNO"
     if [ $IDF_BuildInfosSilent -eq 1 ]; then
         [ $BTI_Shown -eq 0 ] && echo -e "  $eTG Silent Info creation$eNO - don't use this as long as your not sure creation goes without errors!" && BTI_Shown=1
         python3 $SH_ROOT/tools/gen_tools_json.py -i "$IDF_PATH" -j "$AR_COMPS/arduino/package/package_esp32_index.template.json" -o "$AR_OUT/" > /dev/null 2>&1
     else 
         python3 $SH_ROOT/tools/gen_tools_json.py -i "$IDF_PATH" -j "$AR_COMPS/arduino/package/package_esp32_index.template.json" -o "$AR_OUT/" 
     fi
-    echo -e "\n-- 3) Generate $eUS'tools.json'$eNO (One file, not Target-specific!)"
-    echo -e   "   ...to: $(shortFP $OUT_FOLDER/tools/esp32-arduino-libs/tools.json)"
+    echo -e   "   ...   b) Tools Package Infos"
+    echo -e   "   ...      at: $(shortFP $(realpath $TOOLS_JSON_OUT)/)$eTG"tools.json"$eNO"
     if [ $IDF_BuildInfosSilent -eq 1 ]; then
         python3 $SH_ROOT/tools/gen_tools_json.py -i "$IDF_PATH" -o "$TOOLS_JSON_OUT/" > /dev/null 2>&1
     else 
@@ -608,13 +610,13 @@ fi
 # Generate PlatformIO manifest file
 # ###################################
 if [ "$BUILD_TYPE" = "all" ]; then
-    echo -e "\n-- 4) Generate$eTG PlatformIO$eNO manifest file $eUS'package.json'$eNO"
+    echo -e "\n-- 3) Generate$eTG PlatformIO$eNO manifest file with >                  $eUS/tools/gen_platformio_manifest.py$eNO"
+    #$eUS'package.json'$eNO"
     pushd $IDF_PATH  > /dev/null
     ibr=$(git describe --all --exact-match 2>/dev/null)
     export IDF_COMMIT=$(git -C "$IDF_PATH" rev-parse --short HEAD)
     popd  > /dev/null
-    echo -e   "   ...at:  $(shortFP $OUT_FOLDER)"
-    echo -e   "   ...with:$eUS $SH_ROOT/tools/gen_platformio_manifest.py $eNO"
+    echo -e   "   ...at: $(shortFP $(realpath $TOOLS_JSON_OUT)/)$eTG"package.json"$eNO"
     if [ $IDF_BuildInfosSilent -eq 1 ]; then
         [ $BTI_Shown -eq 0 ] && echo -e "  $eTG Silent Info creation$eNO - don't use this as long as your not sure creation goes without errors!" && BTI_Shown=1
         python3 $SH_ROOT/tools/gen_platformio_manifest.py -o "$TOOLS_JSON_OUT/" -s "$ibr" -c "$IDF_COMMIT" > /dev/null 2>&1
@@ -628,9 +630,8 @@ fi
 # ##############################################
 if [ $COPY_OUT -eq 1 ]; then
     mkdir -p $ESP32_ARDUINO # Create the Folder if it does not exist
-    echo -e '\n-- 5) Copy all to arduino-esp32'
+    echo -e "\n-- 4) Create a 'ready to use'-copy of 'arduino-esp32' with >            $eUS/tools/copy-to-arduino.sh$eNO"
     echo -e   "   ...at: $(shortFP $ESP32_ARDUINO)"
-    echo -e   "   ...with:$eUS $SH_ROOT/tools/copy-to-arduino.sh $eNO"
     source $SH_ROOT/tools/copy-to-arduino.sh
     if [ $? -ne 0 ]; then exit 1; fi
 fi
@@ -638,7 +639,7 @@ fi
 # push changes to esp32-arduino-libs and create pull request into arduino-esp32
 # ##############################################
 if [ $DEPLOY_OUT -eq 1 ]; then
-    echo -e '\n-- 6) Push changes to esp32-arduino-libs'
+    echo -e "\n-- 5) Push changes to esp32-arduino-libs with >                         $eUS/tools/push-to-arduino.sh$eNO"
     echo -e   "   ...with:$eUS $SH_ROOT/tools/push-to-arduino.sh $eNO"
     source $SH_ROOT/tools/push-to-arduino.sh
     if [ $? -ne 0 ]; then exit 1; fi
@@ -647,9 +648,9 @@ fi
 # Write *.tar.gz archive with the build stuff
 ###############################################
 if [ $ARCHIVE_OUT -eq 1 ]; then
-    echo -e "\n-- 7) Move the build to dist-folder"
+    echo -e "\n-- 6) Create a archive of build for Arduiono with >                     $eUS/tools/archive-build.sh$eNO"
     echo -e   "   ...with:$eUS $SH_ROOT/tools/archive-build.sh$TG $TARGET $eNO"
-    source $SH_ROOT/tools/archive-build.sh "$TARGET"
+#    source $SH_ROOT/tools/archive-build.sh "$TARGET"
     if [ $? -ne 0 ]; then exit 1; fi
 fi
 ##########################################################
@@ -671,8 +672,8 @@ fi
 # >> adapted from GH 'Jason2866/esp32-arduino-lib-builder'
 ##########################################################
 if [ $PIO_OUT_F -eq 1 ]; then
-    echo -e '\n## 8) PIO create File-structure & archive *.tar.gz'
-    echo -e   "   ...with:$eUS $SH_ROOT/tools/PIO-create-archive.sh $eNO"
+    echo -e "\n-- 7)$eTG PIO$eNO create File-structure & archive *.tar.gz with >$eUS   /tools/PIO-create-archive.sh$eNO"
+#    echo -e   "   ...with:$eUS $SH_ROOT/tools/PIO-create-archive.sh $eNO"
     source $SH_ROOT/tools/PIO-create-archive.sh "$TARGET"
     if [ $? -ne 0 ]; then exit 1; fi
 fi
