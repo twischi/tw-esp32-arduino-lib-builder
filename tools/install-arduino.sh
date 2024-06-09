@@ -1,9 +1,6 @@
 #/bin/bash
 
-# Get the full path of the running script
-script_path="$0"
-# Extract just the script name
-script_name=$(shortFP $(basename "$0"))
+
 
 source $SH_ROOT/tools/config.sh
 echo     "...Component ESP32 Arduino installing/updating local copy...."
