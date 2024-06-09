@@ -15,6 +15,7 @@ fi
 echo "...ESP-IDF installing local copy..."
 # Get it by cloning set BRANCH!!!, if not already there
 if [ ! -d "$IDF_PATH" ]; then
+	mkdir -p $IDF_PATH # create the directory if not exists
 	echo -e "   cloning $eGI$IDF_REPO_URL$eNO\n   to: $(shortFP $IDF_PATH)"
 	echo -e "   Checkout Branch:$eTG '$IDF_BRANCH' $eNO"
 	git clone $IDF_REPO_URL -b $IDF_BRANCH $IDF_PATH --quiet
@@ -43,6 +44,10 @@ fi
 echo "...Updating IDF-Tools and Modules"
 echo "   to same path like above"
 git -C $IDF_PATH submodule update --init --recursive --quiet
+# submodule:   Command to work with submodules inside this repository.
+# update:      Action to updates submodules to the commit specified in the superproject's
+# --init:      If a submodule is not initzialzed, initzialize it.
+# --recursive: Update submodules recursively if nested submodules are found.
 if [ ! -x $idf_was_installed ] || [ ! -x $commit_predefined ]; then
 	echo -e "...Installing ESP-IDF Tools"
 	echo -e "   with:$eUS $IDF_PATH/install.sh$eNO"	
