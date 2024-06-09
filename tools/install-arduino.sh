@@ -34,6 +34,18 @@ else
 	# Use the default location (No Symlink)
 	ArduionoCOMPS="$AR_COMPS/arduino" 
 fi
+#--------------------------------------------------------
+# Checkout, could be BRANCH or COMMIT
+#--------------------------------------------------------
+if [ "$AR_COMMIT" ]; then
+	echo -e "...Checkout COMMIT:$eTG '$AR_COMMIT'$eNO"
+#	echo -e "   Branch-relation?:$ePF $(git -C $ArduionoCOMPS branch --contains 2ba3ed3) $eNO"
+	git -C "$ArduionoCOMPS" checkout "$AR_COMMIT" --quiet
+fi
+if [ "$AR_BRANCH" ]; then
+	echo -e "...Checkout BRANCH:$eTG '$AR_BRANCH'$eNO"
+	git -C "$ArduionoCOMPS" checkout "$AR_BRANCH" --quiet
+fi
 # --------------------------------------------
 # Get <arduino-esp32> 
 #    -by cloning or updating, if already there
@@ -45,18 +57,6 @@ else
 	echo -e "   updating (already there)$eGI $AR_REPO_URL$eNO\n   to: $(shortFP $ArduionoCOMPS)" 
 	git -C "$ArduionoCOMPS" fetch --quiet           # Fetch  changes without write it local
 	git -C "$ArduionoCOMPS" pull --ff-only --quiet  # Pull > Update local Folder with remote changes
-fi
-#--------------------------------------------------------
-# BRANCH given: checkout 
-#--------------------------------------------------------
-if [ "$AR_COMMIT" ]; then
-	echo -e "...Checkout COMMIT:$eTG '$AR_COMMIT'$eNO"
-#	echo -e "   Branch-relation?:$ePF $(git -C $ArduionoCOMPS branch --contains 2ba3ed3) $eNO"
-	git -C "$ArduionoCOMPS" checkout "$AR_COMMIT" --quiet
-fi
-if [ "$AR_BRANCH" ]; then
-	echo -e "...Checkout BRANCH:$eTG '$AR_BRANCH'$eNO"
-	git -C "$ArduionoCOMPS" checkout "$AR_BRANCH" --quiet
 fi
 #--------------------------------------------------------
 # Get additional infos
