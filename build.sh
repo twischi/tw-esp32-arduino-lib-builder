@@ -257,24 +257,24 @@ CONFIGS=$@
 # **********************************************
 if [ $SKIP_ENV -eq 0 ]; then
     echo -e '---------------------------- 2) Load the Compontents ------------------------------'
-    echo -e    "-- Load arduino_tinyusb component with > $eUS          /tools/update-components.sh$eNO"
+    echo -e   "-- Load arduino_tinyusb component with > $eUS               /tools/update-components.sh$eNO"
     # update components from git
     source $SH_ROOT/tools/update-components.sh
     osascript -e 'beep 3' # Beep 3 times
     if [ $? -ne 0 ]; then exit 1; fi    
-    echo -e "\n-- Load arduino-esp32 component with > $eUS             /tools/install-arduino.sh$eNO"
+    echo -e "\n-- Load arduino-esp32 component with > $eUS                   /tools/install-arduino.sh$eNO"
     # install arduino component
     source $SH_ROOT/tools/install-arduino.sh
     osascript -e 'beep 3' # Beep 3 times
     if [ $? -ne 0 ]; then exit 1; fi
     # install esp-idf
-    echo -e "\n-- Load esp-idf component with > $eUS                   /tools/install-esp-idf.sh$eNO"
+    echo -e "\n-- Load esp-idf component with > $eUS                         /tools/install-esp-idf.sh$eNO"
     source $SH_ROOT/tools/install-esp-idf.sh
     osascript -e 'beep 3' # Beep 3 times
     if [ $? -ne 0 ]; then exit 1; fi
     echo -e   '----------------------------- Components load DONE  -------------------------------\n'
 else
-    echo -e "\n--- NO load of Components: Just get the Pathes with > $eUS /tools/config.sh$eNO"
+    echo -e "\n--- NO load of Components: Just get the Pathes with > $eUS             /tools/config.sh$eNO"
     # $IDF_PATH/install.sh
     # source $IDF_PATH/export.sh
     source $SH_ROOT/tools/config.sh

@@ -1,7 +1,5 @@
 #/bin/bash
 
-
-
 source $SH_ROOT/tools/config.sh
 echo     "...Component ESP32 Arduino installing/updating local copy...."
 # ------------------------------------------------
@@ -51,9 +49,9 @@ fi
 #--------------------------------------------------------
 if [ "$AR_COMMIT" ]; then
 	echo -e "...Checkout COMMIT:$eTG '$AR_COMMIT'$eNO"
+	git -C $ArduionoCOMPS checkout $AR_COMMIT --quiet
 	branchOfCommit=$(git -C $ArduionoCOMPS branch --contains $AR_COMMIT | sed '/^\*/d' | sed 's/^[[:space:]]*//') # Remove lines starting with '*' as it name the current head
 	echo -e "   Branch of the Commit is at: $eTG$branchOfCommit$eNO"
-	git -C $ArduionoCOMPS checkout $AR_COMMIT --quiet
 fi
 if [ "$AR_BRANCH" ]; then
 	echo -e "...Checkout BRANCH:$eTG '$AR_BRANCH'$eNO"
