@@ -25,7 +25,7 @@ extractFileName() {
 # usage: echo -e "$(shortFP "/Users/thomas/JOINED/esp32-arduino-lib-builder/out/tools")
 shortFP() {   
     local filePathLong="$1"
-    local removePart="$(realpath $(pwd)/../)/" # DIR above the current directory
+    local removePart="$(realpath $(pwd)/../../)/" # DIR above the current directory
     local filePathShort=$(echo "$filePathLong" | sed "s|$removePart||")     
     echo "$ePF$filePathShort$eNO"
 }
