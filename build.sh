@@ -523,7 +523,7 @@ fi
 # **********************************************
 # ******  Add components version info    *******
 # **********************************************
-echo -e '----------------------------- 4) Create Version Info ------------------------------'
+echo -e '----------------------------- 4) Create Version by using the build ------------------------------'
 [ $BTI_Shown -eq 0 ] && echo -e "  $eTG Silent Info creation$eNO - don't use this as long as your not sure creation goes without errors!\n" && BTI_Shown=1
 ################################
 # Create NEW Version Info-File
@@ -610,7 +610,7 @@ fi
 # Generate PlatformIO manifest file
 # ###################################
 if [ "$BUILD_TYPE" = "all" ]; then
-    echo -e "\n-- 3) Generate$eTG PlatformIO$eNO manifest file with >                  $eUS/tools/gen_platformio_manifest.py$eNO"
+    echo -e "\n-- 3) Generate$eTG PlatformIO$eNO manifest file with >                 $eUS/tools/gen_platformio_manifest.py$eNO"
     #$eUS'package.json'$eNO"
     pushd $IDF_PATH  > /dev/null
     ibr=$(git describe --all --exact-match 2>/dev/null)
@@ -630,7 +630,7 @@ fi
 # ##############################################
 if [ $COPY_OUT -eq 1 ]; then
     mkdir -p $ESP32_ARDUINO # Create the Folder if it does not exist
-    echo -e "\n-- 4) Create a 'ready to use'-copy of 'arduino-esp32' with >            $eUS/tools/copy-to-arduino.sh$eNO"
+    echo -e "\n-- 4) Create a 'ready to use'-copy of 'arduino-esp32' with >           $eUS/tools/copy-to-arduino.sh$eNO"
     echo -e   "   ...at: $(shortFP $ESP32_ARDUINO)"
     source $SH_ROOT/tools/copy-to-arduino.sh
     if [ $? -ne 0 ]; then exit 1; fi
@@ -648,9 +648,8 @@ fi
 # Write *.tar.gz archive with the build stuff
 ###############################################
 if [ $ARCHIVE_OUT -eq 1 ]; then
-    echo -e "\n-- 6) Create a archive of build for Arduiono with >                     $eUS/tools/archive-build.sh$eNO"
-    echo -e   "   ...with:$eUS $SH_ROOT/tools/archive-build.sh$TG $TARGET $eNO"
-#    source $SH_ROOT/tools/archive-build.sh "$TARGET"
+    echo -e "\n-- 6) Create a archive of build for Arduiono with >                      $eUS/tools/archive-build.sh$eNO"
+    source $SH_ROOT/tools/archive-build.sh "$TARGET"
     if [ $? -ne 0 ]; then exit 1; fi
 fi
 ##########################################################
@@ -672,10 +671,10 @@ fi
 # >> adapted from GH 'Jason2866/esp32-arduino-lib-builder'
 ##########################################################
 if [ $PIO_OUT_F -eq 1 ]; then
-    echo -e "\n-- 7)$eTG PIO$eNO create File-structure & archive *.tar.gz with >$eUS   /tools/PIO-create-archive.sh$eNO"
+    echo -e "\n-- 7)$eTG PIO$eNO create File-structure & archive *.tar.gz with >$eUS           /tools/PIO-create-archive.sh$eNO"
 #    echo -e   "   ...with:$eUS $SH_ROOT/tools/PIO-create-archive.sh $eNO"
     source $SH_ROOT/tools/PIO-create-archive.sh "$TARGET"
     if [ $? -ne 0 ]; then exit 1; fi
 fi
-echo -e '---------------------------- DONE Create Version Info -----------------------------'
+echo -e '-------------------------------- DONE Create Version Info ---------------------------------'
 osascript -e 'beep 6' # Beep 6 times

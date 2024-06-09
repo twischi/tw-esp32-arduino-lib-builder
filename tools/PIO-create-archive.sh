@@ -1,24 +1,11 @@
 #!/bin/bash
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# ~~ DEUG DEBUG DEBUG DEBUG DEUG DEBUG DEBUG DEBUG  DEBUG DEBUG DEBUG
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-if [ -z $SH_ROOT ]; then
-    source ./tools/config.sh
-    source ./tools/prettiyfiHelpers.sh
-    # Import all environment variables from file
-    oneUpDir=$(realpath $(pwd)/../) # DIR above the current directory
-    echo "Load: $oneUpDir/env_variables-afterBuild-Debug.sh" 
-    source "$oneUpDir/env_variables-afterBuild-Debug.sh"
-fi
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 # -------------------------------
 # PIO Folder = from build output 
 # -------------------------------
 OUT_PIO=$oneUpDir/PIO-Out/framework-arduinoespressif32
-OUT_PIO_Dist=$(realpath $OUT_PIO/../)/Dist 
 mkdir -p dist $OUT_PIO # Make sure Folder exists
+OUT_PIO_Dist=$(realpath $OUT_PIO/../)/Dist
 #-----------------------------------------
 # Messag: Start Creating content
 #-----------------------------------------
@@ -137,4 +124,3 @@ echo -e "   PIO DONE!"
 # cd out & 'tools/esp32-arduino-libs' >>  $AR_OWN_OUT/tools/esp32-arduino-libs
 #---
 # cd out & '..'                       >>  $SH_ROOT
-
