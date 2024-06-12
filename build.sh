@@ -292,7 +292,7 @@ if [ -z $SKIP_BUILD ]; then  # SKIP BUILD for testing purpose ONLY
 # *****   Build II ALL   ******
 # **********************************************
 if [ "$BUILD_TYPE" != "all" ]; then
-    echo -e '----------------- 3)BUILD Target-List (NOT ALL) -----------------'  
+    echo -e '------------------- 3)BUILD Target-List (NOT ALL)  -------------------'
     if [ "$TARGET" = "all" ]; then
         echo "ERROR: You need to specify target for non-default builds"
         print_help
@@ -330,7 +330,7 @@ if [ "$BUILD_TYPE" != "all" ]; then
         if [ $? -ne 0 ]; then exit 1; fi
         echo    "   Building for Target:$target DONE"
     done
-    echo -e '----------------- BUILD Target-List   DONE    -----------------\n'
+    echo -e '-----------------     BUILD Target-List   DONE    -----------------\n'
     exit 0
 fi
 # **********************************************
