@@ -142,7 +142,7 @@ fi
 #-------------------------------
 # Process Arguments were passed
 #-------------------------------
-echo -e "\n-------------------------- 1) Given ARGUMENTS Process & Check ----------------------------"
+echo -e "\n-------------------------- 1) Given ARGUMENTS Process & Check ------------------------------"
 while getopts ":A:a:p:I:f:i:c:o:t:b:D:delsSVWX" opt; do
     case ${opt} in
         s )
@@ -256,7 +256,7 @@ CONFIGS=$@
 # ******     LOAD needed Components      *******
 # **********************************************
 if [ $SKIP_ENV -eq 0 ]; then
-    echo -e   '-------------------------------- 2) Load the Compontents -----------------------------------'
+    echo -e   '-------------------------------- 2) Load the Compontents -------------------------------------'
     echo -e   "-- Load arduino_tinyusb component with > $eUS                       /tools/update-components.sh$eNO"
     # update components from git
     source $SH_ROOT/tools/update-components.sh
@@ -336,7 +336,7 @@ fi
 # **********************************************
 # ******     BUILD the Components        *******
 # **********************************************
-echo -e   '------------------------------ 3) BUILD for Named Targets --------------------------------'
+echo -e   '------------------------------ 3) BUILD for Named Targets ----------------------------------'
 # Clean the build- and out- folders
 rm -rf build sdkconfig out # Clean the build folders
 # -----------------------------------------------------
