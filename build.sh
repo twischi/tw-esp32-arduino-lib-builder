@@ -44,7 +44,7 @@ export SH_ROOT=$(pwd)
 source $SH_ROOT/tools/prettiyfiHelpers.sh
 #---------------------------
 # Show intro of the build.sh 
-echo -e "\n~~~~~~~~~~~~~~~~~~~ $eTG Starting of the build.sh $eNO to get the Arduino-Libs ~~~~~~~~~~~~~~~~~~~"
+echo -e "\n~~~~~~~~~~~~~~~~~~~~   $eTG Starting of the build.sh $eNO to get the Arduino-Libs    ~~~~~~~~~~~~~~~~~~~~"
 echo -e   "~~ Purpose: Get the Arduino-Libs for manifold  ESP32-Variants > Targets"
 echo -e   "~~          It will generate 'Static Libraries'-Files (*.a) and 'Bootloader'-Files (*.elf)"
 echo -e   "~~          along with may others neeed files."
@@ -56,7 +56,7 @@ echo -e   "~~          4) Create outputs and move this files"
 echo -e   "~~ build.sh started at Folder (SH_ROOT):"
 echo -e   "~~          >>$ePF $SH_ROOT $eNO"
 echo -e   "~~          >> Bash version:$eGI $BASH_VERSION $eNO"
-echo -e   "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+echo -e   "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 #-----------------------------------------------------------
 # Set the default values to be overwritten by the arguments
 #-----------------------------------------------------------
@@ -142,7 +142,7 @@ fi
 #-------------------------------
 # Process Arguments were passed
 #-------------------------------
-echo -e "\n-------------------------- 1) Given ARGUMENTS Process & Check ------------------------------"
+echo -e "\n--------------------------    1) Given ARGUMENTS Process & Check    -----------------------------"
 while getopts ":A:a:p:I:f:i:c:o:t:b:D:delsSVWX" opt; do
     case ${opt} in
         s )
@@ -247,7 +247,7 @@ while getopts ":A:a:p:I:f:i:c:o:t:b:D:delsSVWX" opt; do
             ;;
     esac
 done
-echo -e   "----------------------------   DONE:  processing ARGUMENTS   -----------------------------\n"
+echo -e   "------------------------------     DONE:  processing ARGUMENTS     ------------------------------\n"
 # --------------------
 # Misc
 shift $((OPTIND -1))
@@ -256,25 +256,25 @@ CONFIGS=$@
 # ******     LOAD needed Components      *******
 # **********************************************
 if [ $SKIP_ENV -eq 0 ]; then
-    echo -e   '-------------------------------- 2) Load the Compontents -------------------------------------'
-    echo -e   "-- Load arduino_tinyusb component with > $eUS                       /tools/update-components.sh$eNO"
+    echo -e   '--------------------------------  2) Load the Compontents   -------------------------------------'
+    echo -e   "-- Load arduino_tinyusb component with > $eUS                          /tools/update-components.sh$eNO"
     # update components from git
     source $SH_ROOT/tools/update-components.sh
     osascript -e 'beep 3' # Beep 3 times
     if [ $? -ne 0 ]; then exit 1; fi    
-    echo -e "\n-- Load arduino-esp32 component with > $eUS                           /tools/install-arduino.sh$eNO"
+    echo -e "\n-- Load arduino-esp32 component with > $eUS                              /tools/install-arduino.sh$eNO"
     # install arduino component
     source $SH_ROOT/tools/install-arduino.sh
     osascript -e 'beep 3' # Beep 3 times
     if [ $? -ne 0 ]; then exit 1; fi
     # install esp-idf
-    echo -e "\n-- Load esp-idf component with > $eUS                                 /tools/install-esp-idf.sh$eNO"
+    echo -e "\n-- Load esp-idf component with > $eUS                                    /tools/install-esp-idf.sh$eNO"
     source $SH_ROOT/tools/install-esp-idf.sh
     osascript -e 'beep 3' # Beep 3 times
     if [ $? -ne 0 ]; then exit 1; fi
-    echo -e   '---------------------------------- Components load DONE  -----------------------------------\n'
+    echo -e   '----------------------------------   Components load DONE    ------------------------------------\n'
 else
-    echo -e "\n--- NO load of Components: Just get the Pathes with > $eUS             /tools/config.sh$eNO"
+    echo -e "\n--- NO load of Components: Just get the Pathes with > $eUS                /tools/config.sh$eNO"
     # $IDF_PATH/install.sh
     # source $IDF_PATH/export.sh
     source $SH_ROOT/tools/config.sh
@@ -367,7 +367,7 @@ targetsCount=${#possibleTargetsArray[@]}
 echo -e "...Number of POSSIBLE Targets=$eTG $targetsCount$eNO" 
 echo -e "   List:$eUS ${possibleTargetsArray[@]}$eNO"
 
-echo -e "#######################      Loop over given Target      #######################"
+echo -e "##########################      Loop over given Target      ##########################"
 for target_json in `jq -c '.targets[]' configs/builds.json`; do
     target=$(echo "$target_json" | jq -c '.target' | tr -d '"')
     target_skip=$(echo "$target_json" | jq -c '.skip // 0')
@@ -392,7 +392,7 @@ for target_json in `jq -c '.targets[]' configs/builds.json`; do
         echo -e "-- Skipping Target: $eSR$target$eNO"
         continue
     fi
-    echo -e "***********************   Building for Target:$eTG $target $eNO  ***********************"
+    echo -e "**************************   Building for Target:$eTG $target $eNO  **************************"
     echo -e "-- Target Out-folder"
     echo -e "   to: $(shortFP $OUT_FOLDER/esp32-arduino-libs/)$eTG$target $eNO"
     #-------------------------
@@ -516,7 +516,7 @@ for target_json in `jq -c '.targets[]' configs/builds.json`; do
 done
 # Clean the build-folder and sdkconfig
 rm -rf build sdkconfig
-echo -e '----------------------------- DONE: BUILD for Named Targets ------------------------------\n'
+echo -e '-----------------------------    DONE: BUILD for Named Targets     ------------------------------\n'
 # TESTING DEBUGING ONLY - TESTING DEBUGING ONLY - TESTING DEBUGING ONLY
 fi
 #------------------------------------------------------------------------
@@ -676,5 +676,5 @@ if [ $PIO_OUT_F -eq 1 ]; then
     source $SH_ROOT/tools/PIO-create-archive.sh "$TARGET"
     if [ $? -ne 0 ]; then exit 1; fi
 fi
-echo -e '-------------------------------- DONE Create Version Info ---------------------------------'
+echo -e '--------------------------------    DONE Create Version Info    ---------------------------------'
 osascript -e 'beep 6' # Beep 6 times
