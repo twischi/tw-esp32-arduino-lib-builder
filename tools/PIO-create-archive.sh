@@ -12,45 +12,46 @@ OUT_PIO_Dist=$(realpath $OUT_PIO/../)/Dist
 echo -e "      for Target(s):$eTG $TARGET $eNO"
 echo -e "      a) Create PlatformIO 'framework-arduinoespressif32' from build (copying...)"
 echo -e "         ...in: $(shortFP $OUT_PIO)"
-#################################################
+####################################################
 # Create PIO - framework-arduinoespressif32  
-##################################################
+####################################################
 #-----------------------------------------
-# PIO 'cores/esp32' - FOLDER
+# PIO COPY 'cores/esp32' - FOLDER
 #-----------------------------------------
 mkdir -p $OUT_PIO/cores/esp32
 cp -rf $ArduionoCOMPS/cores $OUT_PIO            # cores-Folder      from 'arduino-esp32'  -IDF Components (GitSource)
 #-----------------------------------------
-# PIO 'tools' - FOLDER
+# PIO COPY 'tools' - FOLDER
 #-----------------------------------------
 mkdir -p $OUT_PIO/tools/partitions
 cp -rf $ArduionoCOMPS/tools $OUT_PIO            # tools-Folder      from 'arduino-esp32'  -IDF Components (GitSource)
-cp -rf $AR_OWN_OUT/tools/esp32-arduino-libs $OUT_PIO/tools/  # from 'esp32-arduino-libs'             (BUILD output-libs) 
-#-----------------------------------------
-# PIO 'libraries' - FOLDER
+#   Remove *.exe files as they are not needed
+    rm -f $OUT_PIO/tools/*.exe                  # *.exe in Tools-Folder >> remove 
+cp -rf $AR_OWN_OUT/tools/esp32-arduino-libs $OUT_PIO/tools/  # from 'esp32-arduino-libs'             (BUILD output-libs)
+# PIO COPY 'libraries' - FOLDER
 #-----------------------------------------
 cp -rf $ArduionoCOMPS/libraries $OUT_PIO        # libraries-Folder  from 'arduino-esp32'  -IDF Components (GitSource)
 #-----------------------------------------
-# PIO 'variants' - FOLDER
+# PIO COPY 'variants' - FOLDER
 #-----------------------------------------
 cp -rf $ArduionoCOMPS/variants $OUT_PIO         # variants-Folder   from 'arduino-esp32   -IDF Components (GitSource)
 #-----------------------------------------
-# PIO Single FILES
+# PIO COPY Single FILES
 #-----------------------------------------
 cp -f $ArduionoCOMPS/CMakeLists.txt $OUT_PIO    # CMakeLists.txt    from 'arduino-esp32'  -IDF Components (GitSource)
 cp -rf $ArduionoCOMPS/idf_* $OUT_PIO            # idf.py            from 'arduino-esp32'  -IDF Components (GitSource)
 cp -f $ArduionoCOMPS/Kconfig.projbuild $OUT_PIO # Kconfig.projbuild from 'arduino-esp32'  -IDF Components (GitSource)
-#---------------------------------- 
-# Create NEW file: cores/esp32/                 # core_version.h    from 'arduino-esp32' & 'esp-idf'  -IDF Components (GitSource)
-#---------------------------------- 
+#----------------------------------- 
+# PIO CREATE NEW file: cores/esp32/             # core_version.h    from 'arduino-esp32' & 'esp-idf'  -IDF Components (GitSource)
+#----------------------------------- 
 # Get needed Info's for this file
 AR_Commit_short=$(git -C "$ArduionoCOMPS" rev-parse --short HEAD || echo "") # Short commit hash of the 'arduino-esp32'
 AR_VERSION=$(jq -c '.version' "$ArduionoCOMPS/package.json" | tr -d '"')     # Version of the 'arduino-esp32'
     AR_VERSION_UNDERSCORE=`echo "$AR_VERSION" | tr . _`                      # Replace dots with underscores
 IDF_Commit_short=$(git -C "$IDF_PATH" rev-parse --short HEAD || echo "")     # Short commit hash of the 'esp-idf'
-#--------------------------------------
-# Create/write the core_version.h file
-#--------------------------------------
+#------------------------------------------
+# PIO create/write the core_version.h file
+#-----------------------------------------
 echo -e "      b) Add core_version.h - File(creating...)"
 echo -e "         ...to: $(shortFP $OUT_PIO/cores/esp32/)$eTG"core_version.h"$eNO"
 cat <<EOL > $OUT_PIO/cores/esp32/core_version.h
@@ -60,17 +61,17 @@ cat <<EOL > $OUT_PIO/cores/esp32/core_version.h
 #define ARDUINO_ESP32_RELEASE "$AR_VERSION_UNDERSCORE"
 EOL
 #---------------------------------------------
-# Generate PIO framework manifest file            # package.json      from 'arduino-esp32' & 'esp-idf'  -IDF Components (GitSource)
-#-------------------------------------------- 
+# PIO generate framework manifest file            # package.json      from 'arduino-esp32' & 'esp-idf'  -IDF Components (GitSource)
+#--------------------------------------------- 
 echo -e "      c) Add PIO framework manifest (creating...)"
 echo -e "         ...to: $(shortFP $OUT_PIO/)$eTG"package.json"$eNO" 
 if [ "$BUILD_TYPE" = "all" ]; then
     python3 $SH_ROOT/tools/PIO-gen_frmwk_manifest.py -o "$OUT_PIO/" -s "v$AR_VERSION" -c "$IDF_COMMIT"
     if [ $? -ne 0 ]; then exit 1; fi
 fi
-# ------------------------------------------------
- # Write release-info that will be added archive
-# ------------------------------------------------
+# -----------------------------------------------------
+# PIO generate release-info that will be added archive
+# -----------------------------------------------------
 GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD) # Get current branch of used esp32-arduiono-lib-builder
 echo -e "      d) Creating release-info.txt used for publishing (creating...)"
 echo -e "         ...to: $(shortFP $OUT_PIO/)$eTG"release-info.txt"$eNO" 
@@ -97,7 +98,6 @@ EOL
 #-----------------------------------------
 # Message create archive
 #-----------------------------------------
-#echo -e "      Arranging PIO-Framwork-Files DONE"
 echo -e "      e) Creating Archive-File (compressing...)"
 #---------------------------------------------------------
 # Set variables for the archive file tar.gz or zip 
