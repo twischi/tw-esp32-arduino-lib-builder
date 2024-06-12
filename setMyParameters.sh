@@ -8,8 +8,9 @@
 # from a other scrpt,
 # see: yourBuild_with_log.sh
 # --------------------------------
-oneUpDir=$(realpath $(pwd)/../)      # DIR above the current directory
-timeStampAR=$(date +"%Y%m%d_%Hh%Mm") # Shorter Timestamp for the arduino-esp32 build
+oneUpDir=$(realpath $(pwd)/../)        # DIR above the current directory
+GitHubSources=$oneUpDir/GitHub-Sources # GitHub-Sources-Folder
+timeStampAR=$(date +"%Y%m%d_%Hh%Mm")   # Shorter Timestamp for the arduino-esp32 build
 echo "Set Parameters for ./build.sh   by this script >> 'setMyParameters.sh'"
 # --------------------------
 # Target Chips               (TARGET)      to be build for. Separate them with comma.
@@ -23,7 +24,7 @@ echo "Set Parameters for ./build.sh   by this script >> 'setMyParameters.sh'"
 # COMMIT                     (AR_COMMIT)   for the building.
 sS+=" -a 2ba3ed3"
 # FOLDER                     (AR_PATH)     to store it.         
-sS+=" -p $oneUpDir/GitHub-Sources/arduino-esp32"
+sS+=" -p $GitHubSources/arduino-esp32"
 # --------------------------
 # <esp-idf>  
 # --------------------------
@@ -32,7 +33,7 @@ sS+=" -I release/v5.1"
 # COMMIT                     (IDF_COMMIT)  for the building.   
 #sS+=" -i '<commit-hash>'"
 # FOLDER                     (IDF_PATH)    to store it.          
-sS+=" -f $oneUpDir/GitHub-Sources/esp-idf"
+sS+=" -f $GitHubSources/esp-idf"
 # DEBUG flag                 (BUILD_DEBUG) for compile with idf.py   
 sS+=" -D error"
 # SKIP                       (SKIP_ENV)    install./update IDF & components. (IDF_InstallSilent)  
