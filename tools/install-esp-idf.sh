@@ -14,21 +14,22 @@ fi
 #--------------------------------
 echo "...ESP-IDF installing local copy..."
 # Get it by cloning or updating
+# ................................
 if [ ! -d "$IDF_PATH" ]; then
 	mkdir -p $IDF_PATH # create the directory if not exists
 	echo -e "   cloning $eGI$IDF_REPO_URL$eNO\n   to: $(shortFP $IDF_PATH)"
-	echo -e "   Checkout Branch:$eTG '$IDF_BRANCH' $eNO"
 	git clone $IDF_REPO_URL -b $IDF_BRANCH $IDF_PATH --quiet
 	idf_was_installed="1"
 else
 	echo -e "   updating(already there)$eGI $IDF_REPO_URL$eNO\n   to: $(shortFP $IDF_PATH)"
-	git -C "$IDF_PATH" fetch --quiet && \
-	git -C "$IDF_PATH" pull --ff-only --quiet
+	git -C "$IDF_PATH" fetch --tags --quiet
 fi
 # Checkout what is given, BRANCH, COMMIT or TAG
+# ................................
 if  [ ! -z "$IDF_BRANCH" ]; then
 	# BRANCH
 	echo -e "   Checkout Branch:$eTG '$IDF_BRANCH' $eNO"
+	git -C "$IDF_PATH" pull --ff-only --quiet
 	git -C "$IDF_PATH" checkout $IDF_BRANCH --quiet
 elif [ ! -z "$IDF_COMMIT" ]; then
 	# COMMIT
@@ -53,33 +54,37 @@ git -C $IDF_PATH submodule update --init --recursive --quiet
 # --recursive: Update submodules recursively if nested submodules are found.
 if [ ! -x $idf_was_installed ] || [ ! -x $commit_predefined ]; then
 	echo -e "...Installing ESP-IDF Tools"
-	echo -e "   with:                                                        $(shortFP $IDF_PATH/install.sh)"
+	[ $IS_Shown -eq 0 ] && [ $IDF_InstallSilent -eq 1 ] && echo -e "  $eTG Silent install$eNO - don't use this as long as your not sure install goes without errors!" && IS_Shown=1
+	echo -e "   with:                                                       $(shortFP $IDF_PATH/install.sh)"
 	if [ $IDF_InstallSilent -eq 1 ] ; then
-		[ $IS_Shown -eq 0 ] && echo -e "  $eTG Silent install$eNO - don't use this as long as your not sure install goes without errors!" && IS_Shown=1  
 		$IDF_PATH/install.sh > /dev/null
 	else
 		echo "   NOT Silent install - use this if you want to see the output of the install script!"
 		$IDF_PATH/install.sh 
 	fi
-
-	echo "...export environment variables (IDF_COMMIT) & (IDF_BRANCH)"
+    # Get current (IDF_COMMIT) and (IDF_BRANCH)
+	# .......................................
+	echo "...export environment variables..."
 	export IDF_COMMIT=$(git -C "$IDF_PATH" rev-parse --short HEAD)
-	export IDF_BRANCH=$(git -C "$IDF_PATH" symbolic-ref --short HEAD || git -C "$IDF_PATH" tag --points-at HEAD)
-
+	if  [ -z "$IDF_BRANCH" ]; then  # BRANCH was not set before  > means > TAG or COMMIT was given
+		branchOfCommit=$(git -C $IDF_PATH branch --contains $IDF_COMMIT | sed '/^\*/d' | sed 's/^[[:space:]]*//') # Remove lines starting with '*' as it name the current head
+		export IDF_BRANCH=$branchOfCommit
+	fi
+	echo -e "         (IDF_COMMIT)= $IDF_COMMIT\t//\t(IDF_BRANCH)= $IDF_BRANCH"
 	# Temporarily patch the ESP32-S2 I2C LL driver to keep the clock source
 	cd $IDF_PATH
 	echo "...Patch difference..."
 	patchFile=$(realpath $SH_ROOT'/patches/esp32s2_i2c_ll_master_init.diff')
-	patch --quiet -p1 -N -i $patchFile
+	patch --quiet -p1 -N -i $patchFile > /dev/null
 	cd - > /dev/null
 fi
 #----------------------------------
 # SETUP ESP-IDF ENV
 #----------------------------------
 echo -e "...Setting up ESP-IDF Environment"
-echo -e "   with:                                                          $(shortFP $IDF_PATH/export.sh)"
+[ $IS_Shown -eq 0 ] && [ $IDF_InstallSilent -eq 1 ] && echo -e "  $eTG Silent install$eNO - don't use this as long as your not sure install goes without errors!" && IS_Shown=1  
+echo -e "   with:                                                         $(shortFP $IDF_PATH/export.sh)"
 if [ $IDF_InstallSilent -eq 1 ] ; then
-	[ $IS_Shown -eq 0 ] && echo -e "  $eTG Silent install$eNO - don't use this as long as your not sure install goes without errors!" && IS_Shown=1  
 	source $IDF_PATH/export.sh > /dev/null
 else
 	echo "   NOT Silent install - use this if you want to see the output of the install script!"
@@ -88,8 +93,8 @@ fi
 #----------------------------------
 # SETUP ARDUINO DEPLOY
 #----------------------------------
-echo "...Setting up Arduino Deploy"
 if [ "$GITHUB_EVENT_NAME" == "schedule" ] || [ "$GITHUB_EVENT_NAME" == "repository_dispatch" -a "$GITHUB_EVENT_ACTION" == "deploy" ]; then
+	echo "...Setting up Arduino Deploy"
 	# format new branch name and pr title
 	if [ -x $commit_predefined ]; then #commit was not specified at build time
 		AR_NEW_BRANCH_NAME="idf-$IDF_BRANCH"
