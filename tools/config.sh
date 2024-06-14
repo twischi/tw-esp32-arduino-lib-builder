@@ -8,8 +8,9 @@ if [ -z $IDF_PATH ]; then
     # Set the default path to the ESP-IDF
     export IDF_PATH="$PWD/esp-idf"
 fi
-# If the AR_PATH is not set, set it to the current directory
-if [ -z $IDF_BRANCH ]; then
+# If nothing is given IDF set to default
+if [ -z "$IDF_BRANCH" ] && [ -z "$IDF_COMMIT" ] && [ -z "$IDF_TAG" ]; then
+    # If the Nothing ist given, set it to 'release/v5.1'
     IDF_BRANCH="release/v5.1"
 fi
 # If the Arduino-Branch (AR_PR_TARGET_BRANCH) of gtt 'arduino-esp32' was not set, set it to 'master'

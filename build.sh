@@ -199,7 +199,7 @@ while getopts ":A:a:p:I:f:i:G:c:o:t:b:D:delsSVWX" opt; do
             ;;
         G )
             export IDF_TAG="$OPTARG"
-            echo -e "-i  <esp-idf>\t Set TAG to be used for compilation (IDF_TAG):$eTG '$IDF_TAG' $eNO"
+            echo -e "-G  <esp-idf>\t Set TAG to be used for compilation (IDF_TAG):$eTG '$IDF_TAG' $eNO"
             ;;
         f )
             export IDF_PATH="$OPTARG"
@@ -263,24 +263,24 @@ CONFIGS=$@
 # **********************************************
 if [ $SKIP_ENV -eq 0 ]; then
     echo -e   '--------------------------------  2) Load the Compontents   -------------------------------------'
-    echo -e   "-- Load arduino_tinyusb component with > $eUS                          /tools/update-components.sh$eNO"
+    echo -e   "-- Load arduino_tinyusb component with > $eUS                            /tools/update-components.sh$eNO"
     # update components from git
     source $SH_ROOT/tools/update-components.sh
     osascript -e 'beep 3' # Beep 3 times
     if [ $? -ne 0 ]; then exit 1; fi    
-    echo -e "\n-- Load arduino-esp32 component with > $eUS                              /tools/install-arduino.sh$eNO"
+    echo -e "\n-- Load arduino-esp32 component with > $eUS                                /tools/install-arduino.sh$eNO"
     # install arduino component
     source $SH_ROOT/tools/install-arduino.sh
     osascript -e 'beep 3' # Beep 3 times
     if [ $? -ne 0 ]; then exit 1; fi
     # install esp-idf
-    echo -e "\n-- Load esp-idf component with > $eUS                                    /tools/install-esp-idf.sh$eNO"
+    echo -e "\n-- Load esp-idf component with > $eUS                                      /tools/install-esp-idf.sh$eNO"
     source $SH_ROOT/tools/install-esp-idf.sh
     osascript -e 'beep 3' # Beep 3 times
     if [ $? -ne 0 ]; then exit 1; fi
     echo -e   '----------------------------------   Components load DONE    ------------------------------------\n'
 else
-    echo -e "\n--- NO load of Components: Just get the Pathes with > $eUS                /tools/config.sh$eNO"
+    echo -e "\n--- NO load of Components: Just get the Pathes with > $eUS                         /tools/config.sh$eNO"
     # $IDF_PATH/install.sh
     # source $IDF_PATH/export.sh
     source $SH_ROOT/tools/config.sh
@@ -298,7 +298,7 @@ if [ -z $SKIP_BUILD ]; then  # SKIP BUILD for testing purpose ONLY
 # *****   Build II ALL   ******
 # **********************************************
 if [ "$BUILD_TYPE" != "all" ]; then
-    echo -e '------------------- 3)BUILD Target-List (NOT ALL)  -------------------'
+    echo -e '------------------- 3)BUILD Target-List (NOT ALL)  -------------------' 
     if [ "$TARGET" = "all" ]; then
         echo "ERROR: You need to specify target for non-default builds"
         print_help
@@ -342,7 +342,7 @@ fi
 # **********************************************
 # ******     BUILD the Components        *******
 # **********************************************
-echo -e   '------------------------------ 3) BUILD for Named Targets ----------------------------------'
+echo -e   '--------------------------------- 3) BUILD for Named Targets ------------------------------------'
 # Clean the build- and out- folders
 rm -rf build sdkconfig out # Clean the build folders
 # -----------------------------------------------------

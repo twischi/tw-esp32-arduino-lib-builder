@@ -33,7 +33,7 @@ sS+=" -p $GitHubSources/arduino-esp32"
 # COMMIT                     (IDF_COMMIT)  for the building.   
 #sS+=" -i '<commit-hash>'"
 # TAG                        (IDF_TAG)     for the building.   
-sS+=" -G 'v5.1.4'"
+sS+=" -G v5.1.4"
 # FOLDER                     (IDF_PATH)    to store it.          
 sS+=" -f $GitHubSources/esp-idf"
 # DEBUG flag                 (BUILD_DEBUG) for compile with idf.py   

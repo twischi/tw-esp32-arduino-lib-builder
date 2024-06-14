@@ -13,7 +13,7 @@ fi
 # Get esp-if 
 #--------------------------------
 echo "...ESP-IDF installing local copy..."
-# Get it by cloning set BRANCH!!!, if not already there
+# Get it by cloning or updating
 if [ ! -d "$IDF_PATH" ]; then
 	mkdir -p $IDF_PATH # create the directory if not exists
 	echo -e "   cloning $eGI$IDF_REPO_URL$eNO\n   to: $(shortFP $IDF_PATH)"
@@ -24,19 +24,22 @@ else
 	echo -e "   updating(already there)$eGI $IDF_REPO_URL$eNO\n   to: $(shortFP $IDF_PATH)"
 	git -C "$IDF_PATH" fetch --quiet && \
 	git -C "$IDF_PATH" pull --ff-only --quiet
+fi
+# Checkout what is given, BRANCH, COMMIT or TAG
+if  [ ! -z "$IDF_BRANCH" ]; then
+	# BRANCH
 	echo -e "   Checkout Branch:$eTG '$IDF_BRANCH' $eNO"
 	git -C "$IDF_PATH" checkout $IDF_BRANCH --quiet
-fi
-# Case when the TAG is set
-if [ "$IDF_TAG" ]; then
-	echo -e "   checkout tags/$IDF_TAG of: $(shortFP $IDF_PATH)"
-    git -C "$IDF_PATH" checkout "tags/$IDF_TAG" --quiet
-    idf_was_installed="1"
-# Case when the COMMIT is set
-elif [ "$IDF_COMMIT" ]; then
+elif [ ! -z "$IDF_COMMIT" ]; then
+	# COMMIT
 	echo -e "   checkout $IDF_COMMIT of: $(shortFP $IDF_PATH)"
     git -C "$IDF_PATH" checkout "$IDF_COMMIT" --quiet
-    commit_predefined="1"
+	commit_predefined="1"
+elif [ ! -z "$IDF_TAG" ]; then
+	# TAG
+	echo -e "   checkout $IDF_TAG of: $(shortFP $IDF_PATH)"
+    git -C "$IDF_PATH" checkout $IDF_TAG --quiet
+    idf_was_installed="1"
 fi
 #----------------------------------
 # UPDATE ESP-IDF TOOLS AND MODULES
@@ -50,7 +53,7 @@ git -C $IDF_PATH submodule update --init --recursive --quiet
 # --recursive: Update submodules recursively if nested submodules are found.
 if [ ! -x $idf_was_installed ] || [ ! -x $commit_predefined ]; then
 	echo -e "...Installing ESP-IDF Tools"
-	echo -e "   with:$eUS $IDF_PATH/install.sh$eNO"	
+	echo -e "   with:                                                        $(shortFP $IDF_PATH/install.sh)"
 	if [ $IDF_InstallSilent -eq 1 ] ; then
 		[ $IS_Shown -eq 0 ] && echo -e "  $eTG Silent install$eNO - don't use this as long as your not sure install goes without errors!" && IS_Shown=1  
 		$IDF_PATH/install.sh > /dev/null
@@ -74,7 +77,7 @@ fi
 # SETUP ESP-IDF ENV
 #----------------------------------
 echo -e "...Setting up ESP-IDF Environment"
-echo -e "   with: $(shortFP $IDF_PATH/export.sh)"
+echo -e "   with:                                                          $(shortFP $IDF_PATH/export.sh)"
 if [ $IDF_InstallSilent -eq 1 ] ; then
 	[ $IS_Shown -eq 0 ] && echo -e "  $eTG Silent install$eNO - don't use this as long as your not sure install goes without errors!" && IS_Shown=1  
 	source $IDF_PATH/export.sh > /dev/null
