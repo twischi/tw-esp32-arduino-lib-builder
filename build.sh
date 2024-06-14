@@ -547,7 +547,7 @@ echo $component_version >> "$AR_TOOLS/esp32-arduino-libs/versions.txt"
 # Write ESP-IDF version
 # -------------------------
 echo -e   '   ...   b) Write esp-idf Version'
-component_version="esp-idf: "$(git -C "$IDF_PATH" symbolic-ref --short HEAD || git -C "$IDF_PATH" tag --points-at HEAD)" "$(git -C "$IDF_PATH" rev-parse --short HEAD)
+component_version="esp-idf: $IDF_BRANCH $IDF_COMMIT"
 echo $component_version >> "$AR_TOOLS/esp32-arduino-libs/versions.txt"
 # -------------------------
 # Write components version
