@@ -84,11 +84,13 @@ function print_help() {
     echo "       -p     <arduino-esp32> Set local FOLDER to Arduino-Component instead of components/arduino (AR_PATH)"
     echo "       -A     <arduino-esp32> Set BRANCH to be used for compilation (AR_BRANCH)"
     echo "       -a     <arduino-esp32> Set COMMIT to be used for compilation (AR_COMMIT)"
+    echo "       -g     <arduino-esp32> Set TAG    to be used for compilation (AR_TAG)"
     echo 
     echo "       -f     <esp-idf>       Set local FOLDER to ESP-IDF-Component instead of components/esp-idf (IDF_PATH)" 
     echo "       -s     <esp-idf>       SKIP installing/updating of ESP-IDF and all components (SKIP_ENV)=1"
     echo "       -I     <esp-idf>       Set BRANCH to be used for compilation (IDF_BRANCH)"
     echo "       -i     <esp-idf>       Set COMMIT to be used for compilation (IDF_COMMIT)"
+    echo "       -G     <esp-idf>       Set TAG    to be used for compilation (IDF_TAG)"
     echo "      ++++    ---------       only '-I' BRANCH <OR> COMMIT '-i' can be used"
     echo "       -D     <esp-idf>       Set DEBUG level compilation. Allowed: default,none,error,warning,info,debug or verbose (BUILD_DEBUG)"
     echo 
@@ -143,7 +145,7 @@ fi
 # Process Arguments were passed
 #-------------------------------
 echo -e "\n--------------------------    1) Given ARGUMENTS Process & Check    -----------------------------"
-while getopts ":A:a:p:I:f:i:c:o:t:b:D:delsSVWX" opt; do
+while getopts ":A:a:p:I:f:i:G:c:o:t:b:D:delsSVWX" opt; do
     case ${opt} in
         s )
             SKIP_ENV=1
@@ -191,14 +193,18 @@ while getopts ":A:a:p:I:f:i:c:o:t:b:D:delsSVWX" opt; do
             export IDF_BRANCH="$OPTARG"
             echo -e "-I  <esp-idf>\t Set BRANCH to be used for compilation (IDF_BRANCH):$eTG '$IDF_BRANCH' $eNO"
             ;;
+        i )
+            export IDF_COMMIT="$OPTARG"
+            echo -e "-i  <esp-idf>\t Set COMMIT to be used for compilation (IDF_COMMIT):$eTG '$IDF_COMMIT' $eNO"
+            ;;
+        G )
+            export IDF_TAG="$OPTARG"
+            echo -e "-i  <esp-idf>\t Set TAG to be used for compilation (IDF_TAG):$eTG '$IDF_TAG' $eNO"
+            ;;
         f )
             export IDF_PATH="$OPTARG"
             echo -e "-f  <esp-idf>\t Set local IDF-Folder (IDF_PATH):"
             echo -e "\t\t >> '$(shortFP $IDF_PATH)'"
-            ;;
-        i )
-            export IDF_COMMIT="$OPTARG"
-            echo -e "-i  <esp-idf>\t Set COMMIT to be used for compilation (IDF_COMMIT):$eTG '$IDF_COMMIT' $eNO"
             ;;
         D )
             BUILD_DEBUG="$OPTARG"

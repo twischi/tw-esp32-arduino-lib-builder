@@ -29,9 +29,11 @@ sS+=" -p $GitHubSources/arduino-esp32"
 # <esp-idf>  
 # --------------------------
 # BRANCH                     (IDF_BRANCH)  for the building.   
-sS+=" -I release/v5.1"
+#sS+=" -I release/v5.1"
 # COMMIT                     (IDF_COMMIT)  for the building.   
 #sS+=" -i '<commit-hash>'"
+# TAG                        (IDF_TAG)     for the building.   
+sS+=" -G 'v5.1.4'"
 # FOLDER                     (IDF_PATH)    to store it.          
 sS+=" -f $GitHubSources/esp-idf"
 # DEBUG flag                 (BUILD_DEBUG) for compile with idf.py   
@@ -69,11 +71,13 @@ set -- $sS
 # <arduino-esp32> Find suitable:
 # --  BRANCH      https://github.com/espressif/arduino-esp32/branches
 # --  COMMIT      https://github.com/espressif/arduino-esp32/commits/master/
+# --  TAG         https://github.com/espressif/arduino-esp32/tags
 # Current choice:
 #     commit      2ba3ed3 = IDF release/v5.1 3f9ab2d6a6 (#9770) 
 
 #  <esp-idf>      Find suitable:
 # --  BRANCH      https://github.com/espressif/esp-idf/branches
 # --  COMMIT      https://github.com/espressif/esp-idf/commits/master/
+# --  TAG         https://github.com/espressif/esp-idf/tags 
 # Current choice:
 #    branch       release/v5.1"
