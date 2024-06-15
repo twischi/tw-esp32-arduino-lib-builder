@@ -42,20 +42,28 @@ if [ ! -d "$ArduionoCOMPS/package" ]; then
 	echo -e "   cloning $eGI$AR_REPO_URL$eNO\n   to: $(shortFP $ArduionoCOMPS)"
 	git clone $AR_REPO_URL "$ArduionoCOMPS" --quiet
 else
-	echo -e "   updating (already there)$eGI $AR_REPO_URL$eNO\n   to: $(shortFP $ArduionoCOMPS)" 
+	echo -e "   updating (already there)$eGI $AR_REPO_URL$eNO\n   to: $(shortFP $ArduionoCOMPS)"
+	git -C $ArduionoCOMPS fetch --tags --quiet
 fi
 #--------------------------------------------------------
-# Checkout, could be BRANCH or COMMIT
+# Checkout, could be BRANCH, COMMIT or TAG
 #--------------------------------------------------------
-if [ "$AR_COMMIT" ]; then
+if [ "$AR_BRANCH" ]; then
+	# BRANCH
+	echo -e "...Checkout BRANCH:$eTG '$AR_BRANCH'$eNO"
+	git -C $ArduionoCOMPS pull --ff-only --quiet
+	git -C $ArduionoCOMPS checkout $AR_BRANCH --quiet
+elif [ "$AR_COMMIT" ]; then
+	# COMMIT
 	echo -e "...Checkout COMMIT:$eTG '$AR_COMMIT'$eNO"
 	git -C $ArduionoCOMPS checkout $AR_COMMIT --quiet
-	branchOfCommit=$(git -C $ArduionoCOMPS branch --contains $AR_COMMIT | sed '/^\*/d' | sed 's/^[[:space:]]*//') # Remove lines starting with '*' as it name the current head
-	echo -e "   Branch of the Commit is at: $eTG$branchOfCommit$eNO"
-fi
-if [ "$AR_BRANCH" ]; then
-	echo -e "...Checkout BRANCH:$eTG '$AR_BRANCH'$eNO"
-	git -C $ArduionoCOMPS checkout $AR_BRANCH --quiet
+	export AR_BRANCH=$(git -C $ArduionoCOMPS branch --contains $AR_COMMIT | sed '/^\*/d' | sed 's/^[[:space:]]*//') # Remove lines starting with '*' as it name the current head
+	echo -e "   Branch of the Commit is at: $eTG$AR_BRANCH$eNO"
+elif [ ! -z "$AR_TAG" ]; then
+	# TAG
+	echo -e "   checkout $AR_TAG of: $(shortFP $IDF_PATH)"
+	export AR_BRANCH=$(git -C $ArduionoCOMPS branch --contains $AR_COMMIT | sed '/^\*/d' | sed 's/^[[:space:]]*//') # Remove lines starting with '*' as it name the current head
+    git -C "$ArduionoCOMPS" checkout $AR_TAG --quiet
 fi
 #--------------------------------------------------------
 # Get additional infos

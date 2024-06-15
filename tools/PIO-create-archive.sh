@@ -103,7 +103,8 @@ echo -e "      e) Creating Archive-File (compressing...)"
 #---------------------------------------------------------
 # Set variables for the archive file tar.gz or zip 
 #---------------------------------------------------------
-idfVersStr=${IDF_BRANCH//\//_}"-$IDF_COMMIT"                   # Create IDF version string
+idfVersStr="$pioIDF_verStr-$pioAR_verStr"       # Create Version string
+idfVersStr=${idfVersStr//\//_}                  # Remove '/' from string
 pioArchFN="framework-arduinoespressif32-$idfVersStr.tar.gz"    # Name of the archive
 echo -e "         ...in:            $(shortFP $OUT_PIO_Dist)"
 echo -e "         ...arch-Filename:$eTG $pioArchFN $eNO"

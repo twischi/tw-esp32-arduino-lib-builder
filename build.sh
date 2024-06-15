@@ -145,7 +145,7 @@ fi
 # Process Arguments were passed
 #-------------------------------
 echo -e "\n--------------------------    1) Given ARGUMENTS Process & Check    -----------------------------"
-while getopts ":A:a:p:I:f:i:G:c:o:t:b:D:delsSVWX" opt; do
+while getopts ":A:a:g:p:I:f:i:G:c:o:t:b:D:delsSVWX" opt; do
     case ${opt} in
         s )
             SKIP_ENV=1
@@ -178,10 +178,17 @@ while getopts ":A:a:p:I:f:i:G:c:o:t:b:D:delsSVWX" opt; do
         A )
             export AR_BRANCH="$OPTARG"
             echo -e "-A  <ar.-esp32>\t Set BRANCH to be used for compilation (AR_BRANCH)=$eTG'$AR_BRANCH'$eNO"
+            pioAR_verStr="AR_$AR_BRANCH"
             ;;
         a )
             export AR_COMMIT="$OPTARG"
             echo -e "-a  <ar.-esp32>\t Set COMMIT to be used for compilation (AR_COMMIT):$eTG '$AR_COMMIT' $eNO"
+            pioAR_verStr="AR_$AR_COMMIT"
+            ;;
+        g )
+            export AR_TAG="$OPTARG"
+            echo -e "-g  <ar.-esp32>\t Set TAG to be used for compilation (AR_COMMIT):$eTG '$AR_TAG' $eNO"
+            pioAR_verStr="AR_tag_$AR_TAG"
             ;;
         p )
             export AR_PATH="$OPTARG"
@@ -192,14 +199,17 @@ while getopts ":A:a:p:I:f:i:G:c:o:t:b:D:delsSVWX" opt; do
         I )
             export IDF_BRANCH="$OPTARG"
             echo -e "-I  <esp-idf>\t Set BRANCH to be used for compilation (IDF_BRANCH):$eTG '$IDF_BRANCH' $eNO"
+            pioIDF_verStr="IDF_$IDF_BRANCH"
             ;;
         i )
             export IDF_COMMIT="$OPTARG"
             echo -e "-i  <esp-idf>\t Set COMMIT to be used for compilation (IDF_COMMIT):$eTG '$IDF_COMMIT' $eNO"
+            pioIDF_verStr="IDF_$IDF_COMMIT"
             ;;
         G )
             export IDF_TAG="$OPTARG"
             echo -e "-G  <esp-idf>\t Set TAG to be used for compilation (IDF_TAG):$eTG '$IDF_TAG' $eNO"
+            pioIDF_verStr="IDF_tag_$IDF_TAG"
             ;;
         f )
             export IDF_PATH="$OPTARG"
@@ -557,11 +567,9 @@ for component in `ls "$AR_COMPS"`; do
     compPath=$(realpath "$AR_COMPS/$component")
     gitFile="$compPath/.git"
     if [ -d "$gitFile" ]; then
-        # NEW check for arduino when AR_COMMIT is given
-        if [ "$component" == 'arduino' ] && [ ! -z $AR_COMMIT ]; then 
-            component_version="$component: master "$AR_COMMIT
-        else
-        # All other components
+        if [ "$component" == 'arduino' ]; then  # Arduino component
+            component_version="$component: $AR_BRANCH $AR_COMMIT"
+        else                                    # All other components
             component_version="$component: "$(git -C "$compPath" symbolic-ref --short HEAD || git -C "$compPath" tag --points-at HEAD)" "$(git -C "$compPath" rev-parse --short HEAD)
         fi
         echo $component_version >> "$AR_TOOLS/esp32-arduino-libs/versions.txt"
@@ -620,7 +628,7 @@ if [ "$BUILD_TYPE" = "all" ]; then
     #$eUS'package.json'$eNO"
     pushd $IDF_PATH  > /dev/null
     ibr=$(git describe --all --exact-match 2>/dev/null)
-    export IDF_COMMIT=$(git -C "$IDF_PATH" rev-parse --short HEAD)
+#    export IDF_COMMIT=$(git -C "$IDF_PATH" rev-parse --short HEAD)
     popd  > /dev/null
     echo -e   "   ...at: $(shortFP $(realpath $TOOLS_JSON_OUT)/)$eTG"package.json"$eNO"
     if [ $IDF_BuildInfosSilent -eq 1 ]; then
@@ -678,7 +686,6 @@ fi
 ##########################################################
 if [ $PIO_OUT_F -eq 1 ]; then
     echo -e "\n-- 7)$eTG PIO$eNO create File-structure & archive *.tar.gz with >$eUS           /tools/PIO-create-archive.sh$eNO"
-#    echo -e   "   ...with:$eUS $SH_ROOT/tools/PIO-create-archive.sh $eNO"
     source $SH_ROOT/tools/PIO-create-archive.sh "$TARGET"
     if [ $? -ne 0 ]; then exit 1; fi
 fi

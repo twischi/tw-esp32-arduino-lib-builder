@@ -22,7 +22,9 @@ echo "Set Parameters for ./build.sh   by this script >> 'setMyParameters.sh'"
 # BRANCH                     (AR_BRANCH)   for the building.  
 #sS+=" -A idf-release/v5.1"
 # COMMIT                     (AR_COMMIT)   for the building.
-sS+=" -a 2ba3ed3"
+#sS+=" -a 2ba3ed3"
+# TAG                        (AR_TAG)      for the building.   
+sS+=" -g 3.0.1"
 # FOLDER                     (AR_PATH)     to store it.         
 sS+=" -p $GitHubSources/arduino-esp32"
 # --------------------------
@@ -44,7 +46,7 @@ sS+=" -D error"
 # Build out Folder & post-Build flags
 # ------------------------------------
 #        ~~ NO building  ~   (SKIP_BUILD)   SKIP building for TESTING DEBUGING ONLY
-sS+=" -X"
+#sS+=" -X"
 # OUT    ~~ during build ~~  (AR_OWN_OUT)  to store the build output.
 sS+=" -o $oneUpDir/Out-from_build"
 # Arduino  ~~ post-build ~~  (ESP32_ARDUINO) for use with Arduino.
@@ -72,12 +74,8 @@ set -- $sS
 # --  BRANCH      https://github.com/espressif/arduino-esp32/branches
 # --  COMMIT      https://github.com/espressif/arduino-esp32/commits/master/
 # --  TAG         https://github.com/espressif/arduino-esp32/tags
-# Current choice:
-#     commit      2ba3ed3 = IDF release/v5.1 3f9ab2d6a6 (#9770) 
 
 #  <esp-idf>      Find suitable:
 # --  BRANCH      https://github.com/espressif/esp-idf/branches
 # --  COMMIT      https://github.com/espressif/esp-idf/commits/master/
 # --  TAG         https://github.com/espressif/esp-idf/tags 
-# Current choice:
-#    branch       release/v5.1"

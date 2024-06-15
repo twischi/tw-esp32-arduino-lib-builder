@@ -10,7 +10,7 @@ if ! [ -x "$(command -v $SED)" ]; then
   	exit 1
 fi
 #--------------------------------
-# Get esp-if 
+# Get <esp-idf> 
 #--------------------------------
 echo "...ESP-IDF installing local copy..."
 # Get it by cloning or updating
