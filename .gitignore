@@ -13,6 +13,8 @@ components/arduino_tinyusb/tinyusb/
 components/tflite-micro/
 esp-idf/
 out/
+out
+esp-idf
 build/
 dist/
 env.sh
@@ -22,5 +24,3 @@ version.txt
 dependencies.lock
 managed_components/
 target/
-out
-esp-idf
