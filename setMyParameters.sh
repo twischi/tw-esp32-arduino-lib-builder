@@ -39,7 +39,7 @@ sS+=" -G v5.1.4"
 # FOLDER                     (IDF_PATH)    to store it.          
 sS+=" -f $GitHubSources/esp-idf"
 # DEBUG flag                 (BUILD_DEBUG) for compile with idf.py   
-sS+=" -D error"
+sS+=" -D info"
 # SKIP                       (SKIP_ENV)    install./update IDF & components. (IDF_InstallSilent)  
 #sS+=" -s" 
 # ------------------------------------
