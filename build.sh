@@ -528,7 +528,7 @@ for target_json in `jq -c '.targets[]' configs/builds.json`; do
         if [ $? -ne 0 ]; then exit 1; fi
         osascript -e 'beep 3' # Beep 3 times
     done
-    echo -e "*************************   FINISHED Building for Target:$eTG $target $eNO  ************************"
+    echo -e "**************************   FINISHED Building for Target:$eTG $target $eNO   **************************"
 done
 # Clean the build-folder and sdkconfig
 rm -rf build sdkconfig
