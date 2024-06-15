@@ -9,21 +9,36 @@ if ! [ -x "$(command -v $SED)" ]; then
   	echo "ERROR: $SED is not installed! Please install $SED first."
   	exit 1
 fi
+# ------------------------------------------------
+# Processing for new OPTION -f > IDF_PATH is given
+# ------------------------------------------------
+if [ ! -z $IDF_PATH_OWN ]; then
+	# ********  Other <esp-idf>-Path ********
+	# Check if symbolic link at $AR_ROOT/components/arduino already exists
+	if [ ! -L $AR_ROOT/esp-idf ]; then
+		# NOT there, than >> Create a symlink 
+		# from  <Source>     to  <target> new Folder that's symlink
+		ln -s   $IDF_PATH_OWN    $AR_ROOT/esp-idf > /dev/null
+	fi
+fi
 #--------------------------------
 # Get <esp-idf> 
 #--------------------------------
 echo "...ESP-IDF installing local copy..."
+# ................................
 # Get it by cloning or updating
 # ................................
 if [ ! -d "$IDF_PATH" ]; then
 	mkdir -p $IDF_PATH # create the directory if not exists
 	echo -e "   cloning $eGI$IDF_REPO_URL$eNO\n   to: $(shortFP $IDF_PATH)"
-	git clone $IDF_REPO_URL -b $IDF_BRANCH $IDF_PATH --quiet
+#	git clone $IDF_REPO_URL -b $IDF_BRANCH $IDF_PATH --quiet
+	git clone $IDF_REPO_URL $IDF_PATH --quiet
 	idf_was_installed="1"
 else
 	echo -e "   updating(already there)$eGI $IDF_REPO_URL$eNO\n   to: $(shortFP $IDF_PATH)"
 	git -C "$IDF_PATH" fetch --tags --quiet
 fi
+# ................................
 # Checkout what is given, BRANCH, COMMIT or TAG
 # ................................
 if  [ ! -z "$IDF_BRANCH" ]; then
@@ -42,6 +57,24 @@ elif [ ! -z "$IDF_TAG" ]; then
     git -C "$IDF_PATH" checkout $IDF_TAG --quiet
     idf_was_installed="1"
 fi
+# .........................................
+# Get current (IDF_COMMIT) and (IDF_BRANCH)
+# .........................................
+echo "...export environment variables..."
+export IDF_COMMIT=$(git -C "$IDF_PATH" rev-parse --short HEAD)
+if  [ -z "$IDF_BRANCH" ]; then  # BRANCH was not set before  > means > TAG or COMMIT was given
+	branchOfCommit=$(git -C $IDF_PATH branch --contains $IDF_COMMIT | sed '/^\*/d' | sed 's/^[[:space:]]*//') # Remove lines starting with '*' as it name the current head
+	export IDF_BRANCH=$branchOfCommit
+fi
+echo -e "         (IDF_COMMIT)= $IDF_COMMIT\t//\t(IDF_BRANCH)= $IDF_BRANCH"
+#----------------------------------------------------------------------
+# CHECKOUT esp32-arduino-libs that has be loaded with Arduino -Install
+#----------------------------------------------------------------------
+# Inherit Branch-Name from <esp-idf>-Branch
+libsBRANCH="idf-$IDF_BRANCH" # HOPE there is a systematic behind that will work in future too
+echo "...esp32-arduino-libs installing locally ..."
+echo -e "   Checkout Branch:$eTG '$libsBRANCH' $eNO   to: $(shortFP $IDF_LIBS_DIR)"
+git -C "$IDF_LIBS_DIR" checkout $libsBRANCH --quiet
 #----------------------------------
 # UPDATE ESP-IDF TOOLS AND MODULES
 #----------------------------------
@@ -56,21 +89,14 @@ if [ ! -x $idf_was_installed ] || [ ! -x $commit_predefined ]; then
 	echo -e "...Installing ESP-IDF Tools"
 	[ $IS_Shown -eq 0 ] && [ $IDF_InstallSilent -eq 1 ] && echo -e "  $eTG Silent install$eNO - don't use this as long as your not sure install goes without errors!" && IS_Shown=1
 	echo -e "   with:                                                       $(shortFP $IDF_PATH/install.sh)"
+	# BUG FIX
+	# Change to LIB folder to avoid error in the install script
 	if [ $IDF_InstallSilent -eq 1 ] ; then
 		$IDF_PATH/install.sh > /dev/null
 	else
 		echo "   NOT Silent install - use this if you want to see the output of the install script!"
 		$IDF_PATH/install.sh 
 	fi
-    # Get current (IDF_COMMIT) and (IDF_BRANCH)
-	# .......................................
-	echo "...export environment variables..."
-	export IDF_COMMIT=$(git -C "$IDF_PATH" rev-parse --short HEAD)
-	if  [ -z "$IDF_BRANCH" ]; then  # BRANCH was not set before  > means > TAG or COMMIT was given
-		branchOfCommit=$(git -C $IDF_PATH branch --contains $IDF_COMMIT | sed '/^\*/d' | sed 's/^[[:space:]]*//') # Remove lines starting with '*' as it name the current head
-		export IDF_BRANCH=$branchOfCommit
-	fi
-	echo -e "         (IDF_COMMIT)= $IDF_COMMIT\t//\t(IDF_BRANCH)= $IDF_BRANCH"
 	# Temporarily patch the ESP32-S2 I2C LL driver to keep the clock source
 	cd $IDF_PATH
 	echo "...Patch difference..."

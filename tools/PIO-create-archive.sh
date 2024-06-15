@@ -117,17 +117,22 @@ rm -f $pioArchFP       # Remove potential old file
 mkdir -p $OUT_PIO_Dist # Make sure Folder exists
 #          <target>     <source> in currtent dir 
 tar -zcf $pioArchFP framework-arduinoespressif32/
+cd $SH_ROOT           # Step back to script-Folder
 # ---------------------------------------------
 # Export Release-Info for git upload
 # ---------------------------------------------
 echo -e "      f) Create Relase-Info for git upload - File(creating...)"
-echo -e "         ...to: $(shortFP $OUT_PIO_Dist/)$eTG"release-info.txt"$eNO"
-rm -f $OUT_PIO_Dist/release-info.txt  # Remove potential old file
-cat <<EOL > $OUT_PIO_Dist/release-info.txt
+echo -e "         ...to: $(shortFP $OUT_PIO_Dist/)$eTG"pio-release-info.txt"$eNO"
+rm -f $OUT_PIO_Dist/pio-release-info.txt  # Remove potential old file
+libBuildToolUrl=$(git remote get-url origin)
+cat <<EOL > $OUT_PIO_Dist/pio-release-info.txt
 PIO <framework-arduinoespressif32> 
 
 Filename:
 $pioArchFN
+
+Build-Tools-Version used in Filename:
+$idfVersStr
 
 Version for PIO package.json:
 $(date +"%Y.%m.%d")
@@ -140,6 +145,10 @@ $pioAR_verStr
 
 Build for this targets:
 $TARGET
+
+Build with this <esp32-arduino-lib-builder>:
+$libBuildToolUrl
+
 EOL
 # ---------------------
 echo -e "   PIO DONE!"
