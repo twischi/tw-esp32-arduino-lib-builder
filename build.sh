@@ -383,7 +383,7 @@ targetsCount=${#possibleTargetsArray[@]}
 echo -e "...Number of POSSIBLE Targets=$eTG $targetsCount$eNO" 
 echo -e "   List:$eUS ${possibleTargetsArray[@]}$eNO"
 
-echo -e "##########################      Loop over given Target      ##########################"
+echo -e "###############################      Loop over given Target      ################################"
 for target_json in `jq -c '.targets[]' configs/builds.json`; do
     target=$(echo "$target_json" | jq -c '.target' | tr -d '"')
     target_skip=$(echo "$target_json" | jq -c '.skip // 0')
@@ -408,7 +408,7 @@ for target_json in `jq -c '.targets[]' configs/builds.json`; do
         echo -e "-- Skipping Target: $eSR$target$eNO"
         continue
     fi
-    echo -e "**************************   Building for Target:$eTG $target $eNO  **************************"
+    echo -e "*******************************   Building for Target:$eTG $target $eNO   *******************************"
     echo -e "-- Target Out-folder"
     echo -e "   to: $(shortFP $OUT_FOLDER/esp32-arduino-libs/)$eTG$target $eNO"
     #-------------------------
@@ -528,7 +528,7 @@ for target_json in `jq -c '.targets[]' configs/builds.json`; do
         if [ $? -ne 0 ]; then exit 1; fi
         osascript -e 'beep 3' # Beep 3 times
     done
-    echo -e "********************  FINISHED Building for Target:$eTG $target $eNO  *******************"
+    echo -e "*************************   FINISHED Building for Target:$eTG $target $eNO  ************************"
 done
 # Clean the build-folder and sdkconfig
 rm -rf build sdkconfig

@@ -15,7 +15,7 @@ echo "Set Parameters for ./build.sh   by this script >> 'setMyParameters.sh'"
 # --------------------------
 # Target Chips               (TARGET)      to be build for. Separate them with comma.
 # --------------------------
-#sS+=" -t esp32h2"
+sS+=" -t esp32h2"
 # --------------------------
 # <arduino-esp32>
 # --------------------------
@@ -46,7 +46,7 @@ sS+=" -D error"
 # Build out Folder & post-Build flags
 # ------------------------------------
 #        ~~ NO building  ~   (SKIP_BUILD)   SKIP building for TESTING DEBUGING ONLY
-#sS+=" -X"
+sS+=" -X"
 # OUT    ~~ during build ~~  (AR_OWN_OUT)  to store the build output.
 sS+=" -o $oneUpDir/Out-from_build"
 # Arduino  ~~ post-build ~~  (ESP32_ARDUINO) for use with Arduino.

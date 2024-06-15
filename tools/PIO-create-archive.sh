@@ -113,7 +113,7 @@ pioArchFP="$OUT_PIO_Dist/$pioArchFN"                           # Full path of th
 # Create the Archive with tar
 # ---------------------------------------------
 cd $OUT_PIO/..         # Step to source-Folder
-rm -f pioArchFP        # Remove potential old file
+rm -f $pioArchFP       # Remove potential old file
 mkdir -p $OUT_PIO_Dist # Make sure Folder exists
 #          <target>     <source> in currtent dir 
 tar -zcf $pioArchFP framework-arduinoespressif32/
@@ -121,10 +121,16 @@ tar -zcf $pioArchFP framework-arduinoespressif32/
 # Export Release-Info for git upload
 # ---------------------------------------------
 echo -e "      f) Create Relase-Info for git upload - File(creating...)"
-echo -e "         ...to: $(shortFP $OUT_PIO_Dist)$eTG"release-info.txt"$eNO"
-cat <<EOL > $OUT_PIO/release-info.txt
+echo -e "         ...to: $(shortFP $OUT_PIO_Dist/)$eTG"release-info.txt"$eNO"
+rm -f $OUT_PIO_Dist/release-info.txt  # Remove potential old file
+cat <<EOL > $OUT_PIO_Dist/release-info.txt
+PIO <framework-arduinoespressif32> 
+
 Filename:
 $pioArchFN
+
+Version for PIO package.json:
+$(date +"%Y.%m.%d")
 
 <esp-idf> - Used for the build:
 $pioIDF_verStr
