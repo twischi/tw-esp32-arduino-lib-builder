@@ -212,9 +212,9 @@ while getopts ":A:a:g:p:I:f:i:G:c:o:t:b:D:delsSVWX" opt; do
             pioIDF_verStr="IDF_tag_$IDF_TAG"
             ;;
         f )
-            export IDF_PATH="$OPTARG"
+            export IDF_PATH_OWN="$OPTARG"
             echo -e "-f  <esp-idf>\t Set local IDF-Folder (IDF_PATH):"
-            echo -e "\t\t >> '$(shortFP $IDF_PATH)'"
+            echo -e "\t\t >> '$(shortFP $IDF_PATH_OWN)'"
             ;;
         D )
             BUILD_DEBUG="$OPTARG"
@@ -294,6 +294,7 @@ else
     # $IDF_PATH/install.sh
     # source $IDF_PATH/export.sh
     source $SH_ROOT/tools/config.sh
+    osascript -e 'beep 3' # Beep 3 times
     echo -e   '--- NO load of Components: DONE--------------------\n'
 fi
 # Hash of managed components
@@ -528,7 +529,7 @@ for target_json in `jq -c '.targets[]' configs/builds.json`; do
         if [ $? -ne 0 ]; then exit 1; fi
         osascript -e 'beep 3' # Beep 3 times
     done
-    echo -e "**************************   FINISHED Building for Target:$eTG $target $eNO   **************************"
+    echo -e "*************************   FINISHED Building for Target:$eTG $target $eNO  ************************"
 done
 # Clean the build-folder and sdkconfig
 rm -rf build sdkconfig
@@ -594,6 +595,7 @@ for component in `ls "$AR_MANAGED_COMPS"`; do
         echo $component_version >> "$AR_TOOLS/esp32-arduino-libs/versions.txt"
     fi
 done
+osascript -e 'beep 1'
 # #########################################
 # Generate JSONs
 #    - package_esp32_index.template.json
@@ -619,6 +621,7 @@ if [ "$BUILD_TYPE" = "all" ]; then
     fi
     # - tools.json
     if [ $? -ne 0 ]; then exit 1; fi
+    osascript -e 'beep 1'
 fi
 # ###################################
 # Generate PlatformIO manifest file
@@ -638,6 +641,7 @@ if [ "$BUILD_TYPE" = "all" ]; then
         python3 $SH_ROOT/tools/gen_platformio_manifest.py -o "$TOOLS_JSON_OUT/" -s "$ibr" -c "$IDF_COMMIT"
     fi    
     if [ $? -ne 0 ]; then exit 1; fi
+    osascript -e 'beep 1'
 fi
 # ##############################################
 # Copy everything to arduino-esp32 installation
@@ -648,6 +652,7 @@ if [ $COPY_OUT -eq 1 ]; then
     echo -e   "   ...at: $(shortFP $ESP32_ARDUINO)"
     source $SH_ROOT/tools/copy-to-arduino.sh
     if [ $? -ne 0 ]; then exit 1; fi
+    osascript -e 'beep 1'
 fi
 # ##############################################
 # push changes to esp32-arduino-libs and create pull request into arduino-esp32
@@ -657,6 +662,7 @@ if [ $DEPLOY_OUT -eq 1 ]; then
     echo -e   "   ...with:$eUS $SH_ROOT/tools/push-to-arduino.sh $eNO"
     source $SH_ROOT/tools/push-to-arduino.sh
     if [ $? -ne 0 ]; then exit 1; fi
+    osascript -e 'beep 1'
 fi
 ###############################################
 # Write *.tar.gz archive with the build stuff
@@ -665,6 +671,7 @@ if [ $ARCHIVE_OUT -eq 1 ]; then
     echo -e "\n-- 6) Create a archive of build for Arduiono with >                      $eUS/tools/archive-build.sh$eNO"
     source $SH_ROOT/tools/archive-build.sh "$TARGET"
     if [ $? -ne 0 ]; then exit 1; fi
+    osascript -e 'beep 1'
 fi
 ##########################################################
 # PIO create Library manifest file
@@ -688,6 +695,7 @@ if [ $PIO_OUT_F -eq 1 ]; then
     echo -e "\n-- 7)$eTG PIO$eNO create File-structure & archive *.tar.gz with >$eUS           /tools/PIO-create-archive.sh$eNO"
     source $SH_ROOT/tools/PIO-create-archive.sh "$TARGET"
     if [ $? -ne 0 ]; then exit 1; fi
+    osascript -e 'beep 1'
 fi
 echo -e '--------------------------------    DONE Create Version Info    ---------------------------------'
-osascript -e 'beep 6' # Beep 6 times
+osascript -e 'beep 10' # Beep 10 times
