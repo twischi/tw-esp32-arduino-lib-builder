@@ -121,13 +121,17 @@ cd $SH_ROOT           # Step back to script-Folder
 # ---------------------------------------------
 # Export Release-Info for git upload
 # ---------------------------------------------
+libBuildToolUrl=$(git remote get-url origin)
 echo -e "      f) Create Relase-Info for git upload - File(creating...)"
+# ..............................................
+# Release-Info as text-file
+# ..............................................
 echo -e "         ...to: $(shortFP $OUT_PIO_Dist/)$eTG"pio-release-info.txt"$eNO"
 rm -f $OUT_PIO_Dist/pio-release-info.txt  # Remove potential old file
-libBuildToolUrl=$(git remote get-url origin)
 cat <<EOL > $OUT_PIO_Dist/pio-release-info.txt
+-----------------------------------------------------
 PIO <framework-arduinoespressif32> 
-
+-----------------------------------------------------
 Filename:
 $pioArchFN
 
@@ -145,11 +149,49 @@ $pioAR_verStr
 
 Build for this targets:
 $TARGET
-
+-----------------------------------------------------
 Build with this <esp32-arduino-lib-builder>:
+-----------------------------------------------------
 $libBuildToolUrl
-
 EOL
+# ..............................................
+# Release-Info as shell-file to import variables
+# ..............................................
+echo -e "         ...to: $(shortFP $OUT_PIO_Dist/)$eTG"pio-release-info.sh"$eNO"
+rm -f $OUT_PIO_Dist/pio-release-info.sh  # Remove potential old file
+cat <<EOL > $OUT_PIO_Dist/pio-release-info.sh
+#!/bin/bash
+# ---------------------------------------------------
+# PIO <framework-arduinoespressif32> 
+# ---------------------------------------------------
+# This *.sh is called by 
+#    https://github.com/twischi/platform-espressif32
+# to set varibles used to release this build version
+# ---------------------------------------------------
+# Filename:
+rlFN=$pioArchFN
+
+# Build-Tools-Version used in Filename:
+rlVersionBuild=$idfVersStr
+
+# Version for PIO package.json:
+rlVersionPkg=$(date +"%Y.%m.%d")
+
+# <esp-idf> - Used for the build:
+rlIDF=$pioIDF_verStr
+
+# <arduino-esp32> - Used for the build:
+rlAR=$pioAR_verStr
+
+# Build for this targets:
+rlTagets=$TARGET
+# -----------------------------------------------------
+# Build with this <esp32-arduino-lib-builder>:
+# -----------------------------------------------------
+# $libBuildToolUrl
+EOL
+chmod +x $OUT_PIO_Dist/pio-release-info.sh
+
 # ---------------------
 echo -e "   PIO DONE!"
 # ---------------------
