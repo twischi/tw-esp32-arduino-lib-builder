@@ -20,22 +20,22 @@ echo "Set Parameters for ./build.sh   by this script >> 'setMyParameters.sh'"
 # <arduino-esp32>
 # --------------------------
 # BRANCH                     (AR_BRANCH)   for the building.  
-#sS+=" -A idf-release/v5.1"
+sS+=" -A idf-release/v5.1"
 # COMMIT                     (AR_COMMIT)   for the building.
 #sS+=" -a 2ba3ed3"
 # TAG                        (AR_TAG)      for the building.   
-sS+=" -g 3.0.1"
+#sS+=" -g 3.0.1"
 # FOLDER                     (AR_PATH)     to store it.         
 sS+=" -p $GitHubSources/arduino-esp32"
 # --------------------------
 # <esp-idf>  
 # --------------------------
 # BRANCH                     (IDF_BRANCH)  for the building.   
-#sS+=" -I release/v5.1"
+sS+=" -I release/v5.1"
 # COMMIT                     (IDF_COMMIT)  for the building.   
 #sS+=" -i '<commit-hash>'"
 # TAG                        (IDF_TAG)     for the building.   
-sS+=" -G v5.1.4"
+#sS+=" -G v5.1.4"
 # FOLDER                     (IDF_PATH)    to store it.          
 sS+=" -f $GitHubSources/esp-idf"
 # DEBUG flag                 (BUILD_DEBUG) for compile with idf.py   
