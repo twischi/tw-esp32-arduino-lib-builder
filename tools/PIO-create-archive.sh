@@ -117,7 +117,7 @@ rm -f $pioArchFP       # Remove potential old file
 mkdir -p $OUT_PIO_Dist # Make sure Folder exists
 #          <target>     <source> in currtent dir 
 tar -zcf $pioArchFP framework-arduinoespressif32/
-cd $SH_ROOT           # Step back to script-Folder
+cd $SH_ROOT            # Step back to script-Folder
 # ---------------------------------------------
 # Export Release-Info for git upload
 # ---------------------------------------------
@@ -132,7 +132,7 @@ cat <<EOL > $OUT_PIO_Dist/pio-release-info.txt
 -----------------------------------------------------
 PIO <framework-arduinoespressif32> 
 -----------------------------------------------------
-Filename:
+Filename:\n
 $pioArchFN
 
 Build-Tools-Version used in Filename:
