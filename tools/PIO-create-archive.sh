@@ -6,7 +6,7 @@
 OUT_PIO=$oneUpDir/PIO-Out/framework-arduinoespressif32
 [ -d "$OUT_PIO" ] && rm -rf "$OUT_PIO" # Remove old folder if exists
 mkdir -p dist $OUT_PIO # Make sure Folder exists
-OUT_PIO_Dist=$(realpath $OUT_PIO/../)/Dist
+OUT_PIO_Dist=$(realpath $OUT_PIO/../)/forRelease
 #-----------------------------------------
 # Messag: Start Creating content
 #-----------------------------------------
