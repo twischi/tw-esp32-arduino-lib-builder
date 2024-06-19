@@ -8,7 +8,7 @@ OUT_PIO=$oneUpDir/PIO-Out/framework-arduinoespressif32
 mkdir -p dist $OUT_PIO # Make sure Folder exists
 OUT_PIO_Dist=$(realpath $OUT_PIO/../)/forRelease
 #-----------------------------------------
-# Messag: Start Creating content
+# Message: Start Creating content
 #-----------------------------------------
 echo -e "      for Target(s):$eTG $TARGET $eNO"
 echo -e "      a) Create PlatformIO 'framework-arduinoespressif32' from build (copying...)"
@@ -28,7 +28,14 @@ mkdir -p $OUT_PIO/tools/partitions
 cp -rf $ArduionoCOMPS/tools $OUT_PIO            # tools-Folder      from 'arduino-esp32'  -IDF Components (GitSource)
 #   Remove *.exe files as they are not needed
     rm -f $OUT_PIO/tools/*.exe                  # *.exe in Tools-Folder >> remove 
-cp -rf $AR_OWN_OUT/tools/esp32-arduino-libs $OUT_PIO/tools/  # from 'esp32-arduino-libs'             (BUILD output-libs)
+cp -rf $AR_OWN_OUT/tools/esp32-arduino-libs $OUT_PIO/tools/  # from 'esp32-arduino-libs'       (BUILD output-libs)
+#--------------------------------------------- 
+# PIO modify .../tools//platformio-build.py 
+#--------------------------------------------- 
+searchLineBy='FRAMEWORK_LIBS_DIR ='
+ replaceLine='FRAMEWORK_LIBS_DIR = join(FRAMEWORK_DIR, "tools", "esp32-arduino-libs")'
+sed -i '' "/^$searchLineBy/s/.*/$replaceLine/" $OUT_PIO/tools/platformio-build.py
+#-----------------------------------------
 # PIO COPY 'libraries' - FOLDER
 #-----------------------------------------
 cp -rf $ArduionoCOMPS/libraries $OUT_PIO        # libraries-Folder  from 'arduino-esp32'  -IDF Components (GitSource)
