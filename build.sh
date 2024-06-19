@@ -673,20 +673,6 @@ if [ $ARCHIVE_OUT -eq 1 ]; then
     if [ $? -ne 0 ]; then exit 1; fi
     osascript -e 'beep 1'
 fi
-##########################################################
-# PIO create Library manifest file
-##########################################################
-# if [ "$BUILD_TYPE" = "all" ]; then
-#     echo -e '### PIO create Library manifest file'
-#     mv -f $AR_ROOT/out/tools/esp32-arduino-libs/package.json package-1.json # Rename the file if exists
-# 	cd 
-# 	export IDF_VERSION=$(<$IDF_PATH/version.txt)
-#         echo "IDF version: $IDF_VERSION"
-#     #                                                  package.json
-#     #                                            to >> esp32-arduino-lib-builder/out/tools/esp32-arduino-libs
-#     python3 $SH_ROOT/tools/PIO-gen_lib_manifest.py -o "$TOOLS_JSON_OUT/" -s "v$IDF_VERSION" -c "$IDF_COMMIT"
-#     if [ $? -ne 0 ]; then exit 1; fi
-# fi
 # ##########################################################
 # PIO create File-structure & archive *.tar.gz 
 # >> adapted from GH 'Jason2866/esp32-arduino-lib-builder'
