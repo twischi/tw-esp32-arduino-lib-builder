@@ -15,7 +15,7 @@ echo "Set Parameters for ./build.sh   by this script >> 'setMyParameters.sh'"
 # --------------------------
 # Target Chips               (TARGET)      to be build for. Separate them with comma.
 # --------------------------
-#sS+=" -t esp32h2"
+sS+=" -t esp32h2"
 # --------------------------
 # <arduino-esp32>
 # --------------------------
@@ -50,7 +50,7 @@ sS+=" -D info"
 # OUT    ~~ during build ~~  (AR_OWN_OUT)  to store the build output.
 sS+=" -o $oneUpDir/Out-from_build"
 # Arduino  ~~ post-build ~~  (ESP32_ARDUINO) for use with Arduino.
-sS+=" -c $oneUpDir/Arduino/copy/arduino-esp32-$timeStampAR"
+#sS+=" -c $oneUpDir/Arduino/copy/arduino-esp32-$timeStampAR"
 # Arduiono  ~~ post-build ~~ (ARCHIVE_OUT) Set flag to create Arduiono archives
 #sS+=" -e"
 # PIO       ~~ post-build ~~ (POI_OUT_F) Set flag to create PIO archives
