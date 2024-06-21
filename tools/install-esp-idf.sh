@@ -114,7 +114,7 @@ fi
 #----------------------------------
 echo -e "...Setting up ESP-IDF Environment"
 [ $IS_Shown -eq 0 ] && [ $IDF_InstallSilent -eq 1 ] && echo -e "  $eTG Silent install$eNO - don't use this as long as your not sure install goes without errors!" && IS_Shown=1  
-echo -e "   with:                                             $(shortFP $IDF_PATH/export.sh)"
+echo -e "   with:                                            $(shortFP $IDF_PATH/export.sh)"
 if [ $IDF_InstallSilent -eq 1 ] ; then
 	source $IDF_PATH/export.sh > /dev/null
 else
