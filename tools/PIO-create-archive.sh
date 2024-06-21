@@ -187,6 +187,7 @@ rlVersionPkg=$(date +"%Y.%m.%d")
 
 # <esp-idf> - Used for the build:
 rlIDF=$pioIDF_verStr
+rlIdfTag=$IDF_TAG
 
 # <arduino-esp32> - Used for the build:
 rlAR=$pioAR_verStr

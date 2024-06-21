@@ -57,6 +57,11 @@ elif [ ! -z "$IDF_TAG" ]; then
     git -C "$IDF_PATH" checkout $IDF_TAG --quiet
     idf_was_installed="1"
 fi
+# Get the related TAG if chekout was not done by TAG (means by BRANCH or COMMIT)
+if [ -z "$IDF_TAG" ]; then
+	IDF_TAG=$(git -C $IDF_PATH describe --tags `git -C $IDF_PATH rev-list --tags --max-count=1` 2>/dev/null) # Get the TAG closest to the current commit
+	echo -e "   As branch or commit was given, this is the extracted TAG:$eTG '$IDF_TAG' $eNO"
+fi
 # .........................................
 # Get current (IDF_COMMIT) and (IDF_BRANCH)
 # .........................................
@@ -88,7 +93,7 @@ git -C $IDF_PATH submodule update --init --recursive --quiet
 if [ ! -x $idf_was_installed ] || [ ! -x $commit_predefined ]; then
 	echo -e "...Installing ESP-IDF Tools"
 	[ $IS_Shown -eq 0 ] && [ $IDF_InstallSilent -eq 1 ] && echo -e "  $eTG Silent install$eNO - don't use this as long as your not sure install goes without errors!" && IS_Shown=1
-	echo -e "   with:                                                       $(shortFP $IDF_PATH/install.sh)"
+	echo -e "   with:                                           $(shortFP $IDF_PATH/install.sh)"
 	# BUG FIX
 	# Change to LIB folder to avoid error in the install script
 	if [ $IDF_InstallSilent -eq 1 ] ; then
@@ -109,7 +114,7 @@ fi
 #----------------------------------
 echo -e "...Setting up ESP-IDF Environment"
 [ $IS_Shown -eq 0 ] && [ $IDF_InstallSilent -eq 1 ] && echo -e "  $eTG Silent install$eNO - don't use this as long as your not sure install goes without errors!" && IS_Shown=1  
-echo -e "   with:                                                         $(shortFP $IDF_PATH/export.sh)"
+echo -e "   with:                                             $(shortFP $IDF_PATH/export.sh)"
 if [ $IDF_InstallSilent -eq 1 ] ; then
 	source $IDF_PATH/export.sh > /dev/null
 else
