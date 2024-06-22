@@ -378,12 +378,16 @@ echo -e "-- Create the Out-folder\n   to: $(shortFP $OUT_FOLDER)"
 # ----------------------------------------------
 # Therefore create a array from from JSON File: 'configs/builds.json'
 # Extract the Possible Target-Names 
-possibleTargetsArray=($(jq -r '.targets[].target' configs/builds.json)) # -r option to get raw output, leads to an array 
+possibleTargetsArray=($(jq -r '.targets[].target' configs/builds.json)) # -r option to get raw output, leads to an array
+activeTargetsArray=($(jq -r '.targets[] | select(.skip != 1) | .target' configs/builds.json))
 # And count the number of elements in the array   
-targetsCount=${#possibleTargetsArray[@]}
-echo -e "...Number of POSSIBLE Targets=$eTG $targetsCount$eNO" 
+possibleTargetsCount=${#possibleTargetsArray[@]} && activeTargetsCount=${#activeTargetsArray[@]}
+echo -e "...Number of ACTIVE Targets=$eTG $activeTargetsCount$eNO from$eTG $possibleTargetsCount$eNO possible Targets, see: 'configs/builds.json'" 
 echo -e "   List:$eUS ${possibleTargetsArray[@]}$eNO"
-
+# ----------------------------------------------
+# MAIN Loop over for BUILDING the Targets
+# ----------------------------------------------
+targetCount=0 # Counter for the loop 
 echo -e "###############################      Loop over given Target      ################################"
 for target_json in `jq -c '.targets[]' configs/builds.json`; do
     target=$(echo "$target_json" | jq -c '.target' | tr -d '"')
@@ -409,7 +413,8 @@ for target_json in `jq -c '.targets[]' configs/builds.json`; do
         echo -e "-- Skipping Target: $eSR$target$eNO"
         continue
     fi
-    echo -e "*******************************   Building for Target:$eTG $target $eNO   *******************************"
+    targetCount=$((targetCount+1)) # Increment the counter
+    echo -e "****************************   Building $targetCount of $activeTargetsCount for Target:$eTG $target $eNO   ***************************"
     echo -e "-- Target Out-folder"
     echo -e "   to: $(shortFP $OUT_FOLDER/esp32-arduino-libs/)$eTG$target $eNO"
     #-------------------------
@@ -441,7 +446,7 @@ for target_json in `jq -c '.targets[]' configs/builds.json`; do
     echo -e "     -Mode:   idf-libs to $ePF.../$eTG$target$ePF/lib$eNO (*.a)"
     if [ $IDF_BuildTargetSilent -eq 1 ]; then
         [ $BTS_Shown -eq 0 ] && echo -e "  $eTG Silent Build$eNO - don't use this as long as your not sure build goes without errors!" && BTS_Shown=1
-#echo 
+#ipf.py
         idf.py -DIDF_TARGET="$target" -DSDKCONFIG_DEFAULTS="$idf_libs_configs" idf-libs > /dev/null 2>&1
     else 
         idf.py -DIDF_TARGET="$target" -DSDKCONFIG_DEFAULTS="$idf_libs_configs" idf-libs
@@ -477,17 +482,19 @@ for target_json in `jq -c '.targets[]' configs/builds.json`; do
     #-------------------
     # Build Bootloaders
     #-------------------
-    countBootloaders=0
-    for boot_conf in `echo "$target_json" | jq -c '.bootloaders[]'`; do
+    bootloadersArray=$(echo "$target_json" | jq -c '.bootloaders[]') # Get a array of bootloaders from $target_json
+    countBL=0 && numBL=0 && for mem_conf in $bootloadersArray; do numBL=$((numBL+1)); done;
+    for boot_conf in $bootloadersArray; do
         bootloader_configs="$main_configs"
         for defconf in `echo "$boot_conf" | jq -c '.[]' | tr -d '"'`; do
             bootloader_configs="$bootloader_configs;configs/defconfig.$defconf";
         done
-        countBootloaders=$((countBootloaders+1))
+        countBL=$((countBL+1))
         if [ -f "$AR_MANAGED_COMPS/espressif__esp-sr/.component_hash" ]; then
             rm -rf $AR_MANAGED_COMPS/espressif__esp-sr/.component_hash
         fi
-        echo "-- 4.$countBootloaders) Build BootLoader"
+        [ $numBL -eq 1 ] && addOn="" || addOn=".$countBL"
+        echo "-- 4$addOn) Build BootLoader ( $countBL of $numBL )"
         rm -rf build sdkconfig
         echo -e "   Build with >$eUS idf.py$eNO -Target:$eTG $target $eNO"
         echo -e "     -Config:$eUS "$(extractFileName $bootloader_configs)"$eNO"
@@ -505,17 +512,20 @@ for target_json in `jq -c '.targets[]' configs/builds.json`; do
     #-----------------------
     # Build Memory Variants
     #-----------------------
-    echo "-- 5) Build Memory Variants for the target"
-    for mem_conf in `echo "$target_json" | jq -c '.mem_variants[]'`; do
+    memVariantsArray=$(echo "$target_json" | jq -c '.mem_variants[]') # Get a array of memory variants from $target_json
+    countMV=0 && numMV=0 && for mem_conf in $memVariantsArray; do numMV=$((numMV+1)); done;
+    for mem_conf in $memVariantsArray; do
         mem_configs="$main_configs"
         for defconf in `echo "$mem_conf" | jq -c '.[]' | tr -d '"'`; do
             mem_configs="$mem_configs;configs/defconfig.$defconf";
         done
-
+        countMV=$((countMV+1))
         if [ -f "$AR_MANAGED_COMPS/espressif__esp-sr/.component_hash" ]; then
             rm -rf $AR_MANAGED_COMPS/espressif__esp-sr/.component_hash
         fi
         rm -rf build sdkconfig
+        [ "$numMV" -eq 1 ] && addOn="" || addOn=".$countMV"
+        echo "-- 5$addOn) Build Memory Variants ( $countMV of $numMV )"
         echo -e "   Build with >$eUS idf.py$eNO -Target:$eTG $target $eNO"
         echo -e "     -Config:$eUS "$(extractFileName $mem_configs)"$eNO"
         echo -e "     -Mode:   mem-variant to $ePF.../$eTG$target$ePF/dio_qspi$eNO and/or$ePF qio_qspi$eNO (*.a)"
