@@ -140,7 +140,7 @@ cat <<EOL > $OUT_PIO_Dist/pio-release-info.txt
 -----------------------------------------------------
 PIO <framework-arduinoespressif32> 
 -----------------------------------------------------
-Filename:\n
+Filename:
 $pioArchFN
 
 Build-Tools-Version used in Filename:
