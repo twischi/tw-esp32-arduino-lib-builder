@@ -68,7 +68,7 @@ fi
 #--------------------------------------------------------
 # Get additional infos
 #--------------------------------------------------------
-if [ -z "$AR_BRANCH" ] && [ -z "$AR_COMMIT" ]; then
+if [ -z "$AR_BRANCH" ] && [ -z "$AR_COMMIT" ]  && [ -z "$AR_TAG" ]; then
 	# Set HEAD_REF if not already set 
 	if [ -z $GITHUB_HEAD_REF ]; then
 		current_branch=`git branch --show-current --quiet`
