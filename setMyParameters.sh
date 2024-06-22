@@ -15,7 +15,7 @@ echo "Set Parameters for ./build.sh   by this script >> 'setMyParameters.sh'"
 # --------------------------
 # Target Chips               (TARGET)      to be build for. Separate them with comma.
 # --------------------------
-#sS+=" -t esp32h2"
+sS+=" -t esp32s3"
 # --------------------------
 # <arduino-esp32>
 # --------------------------
@@ -74,8 +74,11 @@ set -- $sS
 # --  BRANCH      https://github.com/espressif/arduino-esp32/branches
 # --  COMMIT      https://github.com/espressif/arduino-esp32/commits/master/
 # --  TAG         https://github.com/espressif/arduino-esp32/tags
+#                 3.0.1 --> IDF 5.1.4 
 
 #  <esp-idf>      Find suitable:
 # --  BRANCH      https://github.com/espressif/esp-idf/branches
 # --  COMMIT      https://github.com/espressif/esp-idf/commits/master/
-# --  TAG         https://github.com/espressif/esp-idf/tags 
+# --  TAG         https://github.com/espressif/esp-idf/tags
+#                 v5.1.4 --> AR 3.0.1
+#                 v5.2.2
