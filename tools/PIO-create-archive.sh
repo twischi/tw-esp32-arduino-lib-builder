@@ -135,6 +135,8 @@ echo -e "      f) Create Relase-Info for git upload - File(creating...)"
 # Release-Info as text-file
 # ..............................................
 echo -e "         ...to: $(shortFP $OUT_PIO_Dist/)$eTG"pio-release-info.txt"$eNO"
+targetsBuildList=$(cat $OUT_FOLDER/targetsBuildList.txt)
+# Get list targets used for the build
 rm -f $OUT_PIO_Dist/pio-release-info.txt  # Remove potential old file
 cat <<EOL > $OUT_PIO_Dist/pio-release-info.txt
 -----------------------------------------------------
@@ -156,7 +158,7 @@ $pioIDF_verStr
 $pioAR_verStr
 
 Build for this targets:
-$TARGET
+$targetsBuildList
 -----------------------------------------------------
 Build with this <esp32-arduino-lib-builder>:
 -----------------------------------------------------
@@ -177,23 +179,23 @@ cat <<EOL > $OUT_PIO_Dist/pio-release-info.sh
 # to set varibles used to release this build version
 # ---------------------------------------------------
 # Filename:
-rlFN=$pioArchFN
+rlFN="$pioArchFN"
 
 # Build-Tools-Version used in Filename:
-rlVersionBuild=$idfVersStr
+rlVersionBuild="$idfVersStr"
 
 # Version for PIO package.json:
-rlVersionPkg=$(date +"%Y.%m.%d")
+rlVersionPkg="$(date +"%Y.%m.%d")"
 
 # <esp-idf> - Used for the build:
-rlIDF=$pioIDF_verStr
-rlIdfTag=$IDF_TAG
+rlIDF="$pioIDF_verStr"
+rlIdfTag="$IDF_TAG"
 
 # <arduino-esp32> - Used for the build:
-rlAR=$pioAR_verStr
+rlAR="$pioAR_verStr"
 
 # Build for this targets:
-rlTagets=$TARGET
+rlTagets="$targetsBuildList"
 # -----------------------------------------------------
 # Build with this <esp32-arduino-lib-builder>:
 # -----------------------------------------------------
