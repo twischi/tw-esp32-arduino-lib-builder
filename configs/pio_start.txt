@@ -33,10 +33,10 @@ env = DefaultEnvironment()
 # --------------------------------------------------------------
 # SOURCE of the CONTENT is from
 #    'pio_start.txt'
-#     Add this as Starting-Block, CMake does the rest
-# within the 'esp32-arduino-lib-builder' tool
-# > insterted with 'copy-libs.sh' is called & this is integrated
-# into 
+#     Add this as Starting-Block in, 'platformio-build.py' 
+#     of {target}-Folder, CMake add the rest
+# This happens in 'esp32-arduino-lib-builder' tool
+# > insert text with 'copy-libs.sh', what is integrates in
 # > 'CMakeList.txt' - File
 #    Hint there is also a 'pio_end.txt'
 # --------------------------------------------------------------
