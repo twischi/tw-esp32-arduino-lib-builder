@@ -15,7 +15,7 @@ echo "Set Parameters for ./build.sh   by this script >> 'setMyParameters.sh'"
 # --------------------------
 # Target Chips               (TARGET)      to be build for. Separate them with comma.
 # --------------------------
-sS+=" -t esp32s3"
+sS+=" -t esp32s3,esp32h2"
 # --------------------------
 # <arduino-esp32>
 # --------------------------
