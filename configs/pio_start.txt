@@ -30,6 +30,16 @@ from SCons.Script import DefaultEnvironment
 
 env = DefaultEnvironment()
 
+# --------------------------------------------------------------
+# SOURCE of the CONTENT is from
+#    'pio_start.txt'
+#     Add this as Starting-Block, CMake does the rest
+# within the 'esp32-arduino-lib-builder' tool
+# > insterted with 'copy-libs.sh' is called & this is integrated
+# into 
+# > 'CMakeList.txt' - File
+#    Hint there is also a 'pio_end.txt'
+# --------------------------------------------------------------
 FRAMEWORK_DIR = env.PioPlatform().get_package_dir("framework-arduinoespressif32")
 FRAMEWORK_SDK_DIR = join(FRAMEWORK_DIR, "tools", "esp32-arduino-libs")
 
