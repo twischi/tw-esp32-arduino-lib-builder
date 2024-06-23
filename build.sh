@@ -373,8 +373,6 @@ if [ ! -z $AR_OWN_OUT ]; then
     OUT_FOLDER=$AR_OWN_OUT 
 fi
 echo -e "-- Create the Out-folder\n   to: $(shortFP $OUT_FOLDER)"
-# Recreate the targetsBuildList.txt file 
-rm -rf $OUT_FOLDER/targetsBuildList.txt && touch $OUT_FOLDER/targetsBuildList.txt
 # ----------------------------------------------
 # Count the number of POSSIBLE targets to build
 # ----------------------------------------------
@@ -438,10 +436,10 @@ for target_json in `jq -c '.targets[]' configs/builds.json`; do
     if [ -f "$AR_MANAGED_COMPS/espressif__esp-sr/.component_hash" ]; then
         rm -rf $AR_MANAGED_COMPS/espressif__esp-sr/.component_hash
     fi
-    #----------------
-    # Build IDF Libs
-    #----------------
-    echo "-- 3) Build IDF-Libs for the target"
+    #-------------------------------------------------------
+    # Build the Arduiono Libs for the current target/CHIP 
+    #------------------------------------------------------
+    echo "-- 3) Build Arduiono-Libs with IDF for the target"
     rm -rf build sdkconfig
     echo -e "   Build with >$eUS idf.py$eNO -Target:$eTG $target $eNO"
     echo -e "     -Config:$eUS "$(extractFileName $idf_libs_configs)"$eNO"
@@ -475,7 +473,7 @@ for target_json in `jq -c '.targets[]' configs/builds.json`; do
         AR_SDK="$AR_TOOLS/esp32-arduino-libs/$target"
         # sr model.bin
         if [ -f "build/srmodels/srmodels.bin" ]; then
-            # echo "$AR_SDK/esp_sr"
+            echo "$AR_SDK/esp_sr"
             mkdir -p "$AR_SDK/esp_sr"
             cp -f "build/srmodels/srmodels.bin" "$AR_SDK/esp_sr/"
             cp -f "partitions.csv" "$AR_SDK/esp_sr/"
@@ -541,14 +539,6 @@ for target_json in `jq -c '.targets[]' configs/builds.json`; do
         if [ $? -ne 0 ]; then exit 1; fi
         osascript -e 'beep 3' # Beep 3 times
     done
-    #----------------------------------------------
-    # Export the Name of the build target to file 
-    #    targetsBuildList.txt
-    #---------------------------------------------
-    if [ "$targetCount" -gt 1 ]; then
-        echo -n ", " >> $OUT_FOLDER/targetsBuildList.txt
-    fi
-    echo -n "$target" >> $OUT_FOLDER/targetsBuildList.txt
     echo -e "***************************   FINISHED Building for Target:$eTG $target $eNO   **************************"
 done
 # Clean the build-folder and sdkconfig
