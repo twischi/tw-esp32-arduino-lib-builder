@@ -54,7 +54,7 @@ AR_OUT=$(realpath "$(pwd)"/out)        # Folder with the build output
 OUT_PIO=$PIO_Out_DIR/framework-arduinoespressif32
 [ -d "$OUT_PIO" ] && rm -rf "$OUT_PIO" # Remove old folder if exists
 mkdir -p dist "$OUT_PIO"               # Make sure Folder exists
-OUT_PIO_Dist=$OUT_PIO=$PIO_Out_DIR/forRelease
+OUT_PIO_Dist=$PIO_Out_DIR/forRelease
 
 # echo "SH_ROOT: $SH_ROOT"
 # echo "oneUpDir: $oneUpDir"
