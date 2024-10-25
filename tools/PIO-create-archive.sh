@@ -1,4 +1,27 @@
 #!/bin/bash
+# --------------------------------------------------------------------------------
+# PIO create archive from build output for release
+# --------------------------------------------------------------------------------
+# The purpose of this script is to create a 'framework-arduinoespressif32' archive
+# from the build output of the 'esp32-arduino-lib-builder' for release.
+#
+# .... This script typically called by 'build.sh'.
+# OUTPUT is placed at:
+#      $oneUpDir/PIO-Out
+#        /framework-arduinoespressif32 << Files arranged for PIO framework needs 
+#        /forRelease                   << Archive and release-info files
+#                                         to be used for release on Github
+#                        e.g. at https://github.com/twischi/platform-espressif32
+#
+# .... It used the given following variables (in order of appearance):
+# INPUT
+#      $TARGET          = Target(s) used with build.sh
+#      $ArduionoCOMPS   = Folder with Arduino-Components
+#      $AR_OWN_OUT      = Folder with the build output
+#      $IDF_PATH        = Folder with the IDF-Components
+#      $BUILD_TYPE      = Type of build (all, lib, core) used with build.sh
+#      $SH_ROOT         = Root Folder lib builder >> esp32-arduino-lib-builder
+# --------------------------------------------------------------------------------
 
 # -------------------------------
 # PIO Folder = from build output 
