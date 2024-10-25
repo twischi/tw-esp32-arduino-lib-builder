@@ -134,9 +134,10 @@ echo -e "      e) Creating Archive-File (compressing...)"
 #---------------------------------------------------------
 # Set variables for the archive file tar.gz or zip 
 #---------------------------------------------------------
+targetsBuildList=$(cat $AR_OUT/targetsBuildList.txt) # Get list of targets used for the build
 idfVersStr="$pioIDF_verStr-$pioAR_verStr"       # Create Version string
 idfVersStr=${idfVersStr//\//_}                  # Remove '/' from string
-pioArchFN="framework-arduinoespressif32-$idfVersStr.tar.gz"    # Name of the archive
+pioArchFN="framework-arduinoespressif32-$idfVersStr-$targetsBuildList.tar.gz"    # Name of the archive
 echo -e "         ...in:            $(shortFP $OUT_PIO_Dist)"
 echo -e "         ...arch-Filename:$eTG $pioArchFN $eNO"
 pioArchFP="$OUT_PIO_Dist/$pioArchFN"                           # Full path of the archive
@@ -150,7 +151,7 @@ mkdir -p $OUT_PIO_Dist # Make sure Folder exists
 tar -zcf $pioArchFP framework-arduinoespressif32/
 cd $SH_ROOT            # Step back to script-Folder
 # ---------------------------------------------
-# Export Release-Info for git upload
+# Export Release-Info to be used for git upload
 # ---------------------------------------------
 libBuildToolUrl=$(git remote get-url origin)
 echo -e "      f) Create Relase-Info for git upload - File(creating...)"
@@ -158,7 +159,6 @@ echo -e "      f) Create Relase-Info for git upload - File(creating...)"
 # Release-Info as text-file
 # ..............................................
 echo -e "         ...to: $(shortFP $OUT_PIO_Dist/)$eTG"pio-release-info.txt"$eNO"
-targetsBuildList=$(cat $AR_OUT/targetsBuildList.txt)
 # Get list targets used for the build
 rm -f $OUT_PIO_Dist/pio-release-info.txt  # Remove potential old file
 cat <<EOL > $OUT_PIO_Dist/pio-release-info.txt
@@ -226,15 +226,9 @@ rlTagets="$targetsBuildList"
 EOL
 chmod +x $OUT_PIO_Dist/pio-release-info.sh
 
-
-
-# SUBSTITUTIONS
-################
-# cd out & '../components/arduino'    >>  $ArduionoCOMPS
-#---
-# cd out & 'tools/esp32-arduino-libs' >>  $AR_OWN_OUT/tools/esp32-arduino-libs
-#---
-# cd out & '..'                       >>  $SH_ROOT
+#--------------------------------------------
+# Display CREATED OUTPUT Message
+#--------------------------------------------
 read -r -d 'XXX' textToOutput <<EOL
 \n
 \t--------------------------------------------\n
@@ -251,9 +245,16 @@ read -r -d 'XXX' textToOutput <<EOL
 \t\t\t ... READY to be released\n
 XXX
 EOL
-
-# Display the content of the variable
 echo -e $textToOutput
 # ---------------------
 echo -e "   PIO DONE!"
 # ---------------------
+
+
+# SUBSTITUTIONS
+################
+# cd out & '../components/arduino'    >>  $ArduionoCOMPS
+#---
+# cd out & 'tools/esp32-arduino-libs' >>  $AR_OWN_OUT/tools/esp32-arduino-libs
+#---
+# cd out & '..'                       >>  $SH_ROOT
