@@ -37,17 +37,17 @@ if [ "$AR_BRANCH" ]; then
 	# BRANCH
 	echo -e "...Checkout BRANCH:$eTG '$AR_BRANCH'$eNO"
 	git -C $ArduionoCOMPS pull --ff-only --quiet
-	git -C $ArduionoCOMPS checkout $AR_BRANCH --quiet
+	git -C $ArduionoCOMPS checkout "$AR_BRANCH" --quiet
 elif [ "$AR_COMMIT" ]; then
 	# COMMIT
 	echo -e "...Checkout COMMIT:$eTG '$AR_COMMIT'$eNO"
-	git -C $ArduionoCOMPS checkout $AR_COMMIT --quiet
-	export AR_BRANCH=$(git -C $ArduionoCOMPS branch --contains $AR_COMMIT | sed '/^\*/d' | sed 's/^[[:space:]]*//') # Remove lines starting with '*' as it name the current head
+	git -C $ArduionoCOMPS checkout "$AR_COMMIT" --quiet
+	export AR_BRANCH=$(git -C "$ArduionoCOMPS" branch --contains "$AR_COMMIT" | sed '/^\*/d' | sed 's/^[[:space:]]*//') # Remove lines starting with '*' as it name the current head
 	echo -e "   Branch of the Commit is at: $eTG$AR_BRANCH$eNO"
 elif [ ! -z "$AR_TAG" ]; then
 	# TAG
 	echo -e "   checkout TAG:$eTG $AR_TAG$eNO"
-	export AR_BRANCH=$(git -C $ArduionoCOMPS branch --contains $AR_COMMIT | sed '/^\*/d' | sed 's/^[[:space:]]*//') # Remove lines starting with '*' as it name the current head
+	export AR_BRANCH=$(git -C "$ArduionoCOMPS" branch --contains "$AR_COMMIT" | sed '/^\*/d' | sed 's/^[[:space:]]*//') # Remove lines starting with '*' as it name the current head
     git -C "$ArduionoCOMPS" checkout $AR_TAG --quiet
 fi
 #--------------------------------------------------------
