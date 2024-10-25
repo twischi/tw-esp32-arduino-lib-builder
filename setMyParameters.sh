@@ -49,7 +49,7 @@ sS+=" -D info"
 # Build out Folder & post-Build flags
 # ------------------------------------
 #        ~~ NO building  ~   (SKIP_BUILD)   SKIP building for TESTING DEBUGING ONLY
-#sS+=" -X"
+sS+=" -X"
 # OUT    ~~ during build ~~  (AR_OWN_OUT)  to store the build output.
 sS+=" -o $oneUpDir/Out-from_build"
 # Arduino  ~~ post-build ~~  (ESP32_ARDUINO) for use with Arduino.

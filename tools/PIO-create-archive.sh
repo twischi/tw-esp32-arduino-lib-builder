@@ -23,9 +23,9 @@
 #      $SH_ROOT         = Root Folder lib builder >> esp32-arduino-lib-builder
 # --------------------------------------------------------------------------------
 
-# -------------------------------
-# PIO Folder = from build output 
-# -------------------------------
+# -----------------------------------------
+# PIO Framework Folder = from build output 
+# -----------------------------------------
 OUT_PIO=$oneUpDir/PIO-Out/framework-arduinoespressif32
 [ -d "$OUT_PIO" ] && rm -rf "$OUT_PIO" # Remove old folder if exists
 mkdir -p dist $OUT_PIO # Make sure Folder exists
@@ -158,7 +158,7 @@ echo -e "      f) Create Relase-Info for git upload - File(creating...)"
 # Release-Info as text-file
 # ..............................................
 echo -e "         ...to: $(shortFP $OUT_PIO_Dist/)$eTG"pio-release-info.txt"$eNO"
-targetsBuildList=$(cat $OUT_FOLDER/targetsBuildList.txt)
+targetsBuildList=$(cat $AR_OUT/targetsBuildList.txt)
 # Get list targets used for the build
 rm -f $OUT_PIO_Dist/pio-release-info.txt  # Remove potential old file
 cat <<EOL > $OUT_PIO_Dist/pio-release-info.txt
@@ -226,9 +226,7 @@ rlTagets="$targetsBuildList"
 EOL
 chmod +x $OUT_PIO_Dist/pio-release-info.sh
 
-# ---------------------
-echo -e "   PIO DONE!"
-# ---------------------
+
 
 # SUBSTITUTIONS
 ################
@@ -237,3 +235,25 @@ echo -e "   PIO DONE!"
 # cd out & 'tools/esp32-arduino-libs' >>  $AR_OWN_OUT/tools/esp32-arduino-libs
 #---
 # cd out & '..'                       >>  $SH_ROOT
+read -r -d 'XXX' textToOutput <<EOL
+\n
+\t--------------------------------------------\n
+\tPIO <framework-arduinoespressif32> CREATED  \n
+\t--------------------------------------------\n
+\tOUTPUT is placed at:\n
+\t\t ...Files for PIO Framework needs\n
+\t\t$ePF $OUT_PIO $eNO\n
+\n
+\t\t ... Perpared for release on Github\n
+\t\t ... e.g. at $eGI https://github.com/twischi/platform-espressif32 $eNO\n
+\t\t$ePF $OUT_PIO_Dist $eNO\n
+\t\t\t$eUS $pioArchFN $eNO\n
+\t\t\t ... READY to be released\n
+XXX
+EOL
+
+# Display the content of the variable
+echo -e $textToOutput
+# ---------------------
+echo -e "   PIO DONE!"
+# ---------------------
