@@ -1,5 +1,15 @@
 #!/bin/bash
 
+#---------------------------------------
+# Define the colors for the echo output
+#---------------------------------------
+export ePF="\x1B[35m"   # echo Color (Purple) for Path and File outputs
+export eGI="\x1B[32m"   # echo Color (Green) for Git-Urls
+export eTG="\x1B[31m"   # echo Color (Red) for Targets
+export eSR="\x1B[9;31m" # echo Color (Strikethrough in Red) for Skipped Targets
+export eUS="\x1B[34m"   # echo Color (blue) for Files that are executed or used 
+export eNO="\x1B[0m"    # Back to    (Black)
+
 # Function to extract file names from semicolon-separated paths and format them
 extractFileName() {
     local configs="$1"

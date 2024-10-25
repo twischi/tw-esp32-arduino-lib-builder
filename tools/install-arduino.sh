@@ -17,28 +17,13 @@ if [ ! -z $AR_COMMIT ]; then
 		exit 1
 	fi 
 fi
-# ------------------------------------------------
-# Processing for new OPTION -a > AR_PATH is given
-# ------------------------------------------------
-if [ ! -z $AR_PATH ]; then
-	# ********  Other Arduiono-Component-Path ********
-	# Check if symbolic link at $AR_ROOT/components/arduino already exists
-	if [ ! -L $AR_ROOT/components/arduino ]; then
-		# NOT there, than >> Create a symlink 
-		# from  <Source>  to  <target> new Folder that's symlink
-		ln -s   $AR_PATH      $AR_ROOT/components/arduino > /dev/null
-	fi
-	# Use the given new location (Symlink)
-	ArduionoCOMPS=$AR_PATH
-else
-	# Use the default location (No Symlink)
-	ArduionoCOMPS="$AR_COMPS/arduino" 
-fi
 # --------------------------------------------
-# Get <arduino-esp32> 
+# Get <arduino-esp32> Folder arduino
 #    -by cloning or updating, if already there
 # --------------------------------------------
-if [ ! -d "$ArduionoCOMPS/package" ]; then
+ArduionoCOMPS=$(realpath "$AR_COMPS/arduino")
+if [ -d "$ArduionoCOMPS" ] && [ -z "$(ls -A "$ArduionoCOMPS")" ]; then
+	mkdir -p $ArduionoCOMPS # create the directory if not exists
 	echo -e "   cloning $eGI$AR_REPO_URL$eNO\n   to: $(shortFP $ArduionoCOMPS)"
 	git clone $AR_REPO_URL "$ArduionoCOMPS" --quiet
 else
@@ -61,7 +46,7 @@ elif [ "$AR_COMMIT" ]; then
 	echo -e "   Branch of the Commit is at: $eTG$AR_BRANCH$eNO"
 elif [ ! -z "$AR_TAG" ]; then
 	# TAG
-	echo -e "   checkout $AR_TAG of: $(shortFP $IDF_PATH)"
+	echo -e "   checkout TAG:$eTG $AR_TAG$eNO"
 	export AR_BRANCH=$(git -C $ArduionoCOMPS branch --contains $AR_COMMIT | sed '/^\*/d' | sed 's/^[[:space:]]*//') # Remove lines starting with '*' as it name the current head
     git -C "$ArduionoCOMPS" checkout $AR_TAG --quiet
 fi
@@ -103,13 +88,14 @@ if [ $? -ne 0 ]; then exit 1; fi
 # Get esp32-arduino-libs COMPONENT
 #--------------------------------------------------------
 if [ ! -d "$IDF_LIBS_DIR" ]; then
-	echo -e "...Cloning esp32-arduino-libs...$eGI$AR_LIBS_REPO_URL$eNO"
-	echo -e "   to: $(shortFP $IDF_LIBS_DIR)"   
+	echo -e "...Cloning esp32-arduino-libs from: $eGI$AR_LIBS_REPO_URL$eNO"
+	echo -e "   to: $(shortFP $IDF_LIBS_DIR)"
 	git clone "$AR_LIBS_REPO_URL" "$IDF_LIBS_DIR" --quiet
 else
-	echo -e "...Updating existing esp32-arduino-libs...$eGI$AR_LIBS_REPO_URL$eNO"
+	echo -e "...Updating existing esp32-arduino-libs from $eGI$AR_LIBS_REPO_URL$eNO"
 	echo -e "   in: $(shortFP $(realpath $IDF_LIBS_DIR))"
-	git -C "$IDF_LIBS_DIR" fetch --quiet && \
-	git -C "$IDF_LIBS_DIR" pull --quiet --ff-only
+	#git -C "$IDF_LIBS_DIR" fetch --quiet && \
+	#git -C "$IDF_LIBS_DIR" pull --quiet --ff-only
+	git -C $IDF_LIBS_DIR fetch --tags --quiet
 fi
 if [ $? -ne 0 ]; then exit 1; fi

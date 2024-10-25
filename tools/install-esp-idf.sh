@@ -9,18 +9,6 @@ if ! [ -x "$(command -v $SED)" ]; then
   	echo "ERROR: $SED is not installed! Please install $SED first."
   	exit 1
 fi
-# ------------------------------------------------
-# Processing for new OPTION -f > IDF_PATH is given
-# ------------------------------------------------
-if [ ! -z $IDF_PATH_OWN ]; then
-	# ********  Other <esp-idf>-Path ********
-	# Check if symbolic link at $AR_ROOT/components/arduino already exists
-	if [ ! -L $AR_ROOT/esp-idf ]; then
-		# NOT there, than >> Create a symlink 
-		# from  <Source>     to  <target> new Folder that's symlink
-		ln -s   $IDF_PATH_OWN    $AR_ROOT/esp-idf > /dev/null
-	fi
-fi
 #--------------------------------
 # Get <esp-idf> 
 #--------------------------------
@@ -28,14 +16,15 @@ echo "...ESP-IDF installing local copy..."
 # ................................
 # Get it by cloning or updating
 # ................................
-if [ ! -d "$IDF_PATH" ]; then
+IDF_PATH=$(realpath $IDF_PATH) # Get the absolute path as it might be a symlink
+if [ -d "$IDF_PATH" ] && [ -z "$(ls -A "$IDF_PATH")" ]; then
 	mkdir -p $IDF_PATH # create the directory if not exists
+	#-----------------------------------------------------------
 	echo -e "   cloning $eGI$IDF_REPO_URL$eNO\n   to: $(shortFP $IDF_PATH)"
-#	git clone $IDF_REPO_URL -b $IDF_BRANCH $IDF_PATH --quiet
 	git clone $IDF_REPO_URL $IDF_PATH --quiet
 	idf_was_installed="1"
 else
-	echo -e "   updating(already there)$eGI $IDF_REPO_URL$eNO\n   to: $(shortFP $IDF_PATH)"
+	echo -e "   updating (already there)$eGI $IDF_REPO_URL$eNO\n   to: $(shortFP $IDF_PATH)"
 	git -C "$IDF_PATH" fetch --tags --quiet
 fi
 # ................................
@@ -43,17 +32,17 @@ fi
 # ................................
 if  [ ! -z "$IDF_BRANCH" ]; then
 	# BRANCH
-	echo -e "   Checkout Branch:$eTG '$IDF_BRANCH' $eNO"
+	echo -e "   checkout BRANCH:$eTG '$IDF_BRANCH' $eNO"
 	git -C "$IDF_PATH" pull --ff-only --quiet
 	git -C "$IDF_PATH" checkout $IDF_BRANCH --quiet
 elif [ ! -z "$IDF_COMMIT" ]; then
 	# COMMIT
-	echo -e "   checkout $IDF_COMMIT of: $(shortFP $IDF_PATH)"
+	echo -e "   checkout COMMIT:$IDF_COMMIT of: $(shortFP $IDF_PATH)"
     git -C "$IDF_PATH" checkout "$IDF_COMMIT" --quiet
 	commit_predefined="1"
 elif [ ! -z "$IDF_TAG" ]; then
 	# TAG
-	echo -e "   checkout $IDF_TAG of: $(shortFP $IDF_PATH)"
+	echo -e "   checkout TAG:$eTG $IDF_TAG$eNO"
     git -C "$IDF_PATH" checkout $IDF_TAG --quiet
     idf_was_installed="1"
 fi
@@ -76,7 +65,8 @@ echo -e "         (IDF_COMMIT)= $IDF_COMMIT\t//\t(IDF_BRANCH)= $IDF_BRANCH"
 # CHECKOUT esp32-arduino-libs that has be loaded with Arduino -Install
 #----------------------------------------------------------------------
 # Inherit Branch-Name from <esp-idf>-Branch
-libsBRANCH="idf-$IDF_BRANCH" # HOPE there is a systematic behind that will work in future too
+#libsBRANCH="idf-$IDF_BRANCH" # HOPE there is a systematic behind that will work in future too
+libsBRANCH="idf-release_v5.1" # 2024-10-22 above NOT WORKING, set manually 
 echo "...esp32-arduino-libs installing locally ..."
 echo -e "   Checkout Branch:$eTG '$libsBRANCH' $eNO   to: $(shortFP $IDF_LIBS_DIR)"
 git -C "$IDF_LIBS_DIR" checkout $libsBRANCH --quiet

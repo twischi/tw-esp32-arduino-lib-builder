@@ -57,33 +57,19 @@ fi
 # Set Path Variables
 AR_ROOT="$PWD"
 # Set relative to AR_ROOT
-AR_COMPS="$AR_ROOT/components"
-AR_MANAGED_COMPS="$AR_ROOT/managed_components"
-AR_OUT="$AR_ROOT/out"
-AR_TOOLS="$AR_OUT/tools"
-AR_PLATFORM_TXT="$AR_OUT/platform.txt"
-AR_GEN_PART_PY="$AR_TOOLS/gen_esp32part.py"
+        AR_COMPS="$AR_ROOT/components"         # Location of arduino_tinyusb, fb_gfx, arduino (arduino-esp32)
+AR_MANAGED_COMPS="$AR_ROOT/managed_components" # Location of esp32-camera and MANY more
+          AR_OUT="$AR_ROOT/out"
+        AR_TOOLS="$AR_OUT/tools"
+ AR_PLATFORM_TXT="$AR_OUT/platform.txt"
+  AR_GEN_PART_PY="$AR_TOOLS/gen_esp32part.py"
 # --------------------------------------
 # Set the Values for esp32-arduino-libs
 # --------------------------------------
 AR_SDK="$AR_TOOLS/esp32-arduino-libs/$IDF_TARGET"
 TOOLS_JSON_OUT="$AR_TOOLS/esp32-arduino-libs"
-IDF_LIBS_DIR=$(realpath $AR_ROOT/../)/esp32-arduino-libs
-# --------------------------------------------------
-# If own Arduino-Component-Path AR_PATH is given
-# (= -a option) then the path to 'esp32-arduino-libs'
-# several path  varibles from config.sh
-# needs to be  overwritten
-# -------------------------------------------------
-if [ ! -z $AR_PATH ]; then
-    # Modify path to 'esp32-arduino-libs'
-    IDF_LIBS_DIR=$(realpath $AR_PATH/../)/esp32-arduino-libs
-	# Set path to 'arduino/components' 
-	export ArduionoCOMPS="$AR_PATH"
-else
-	# NORMAL PROCESSING
-	# Set path to 'arduino/components' 
-	export ArduionoCOMPS="$AR_COMPS/arduino"
+if [ -z $IDF_LIBS_DIR ]; then 
+    IDF_LIBS_DIR=$(realpath $AR_ROOT/../)/esp32-arduino-libs
 fi
 # --------------------------------------
 # Set for PIO-SDK = PlatformIO SDK
@@ -193,4 +179,3 @@ function git_create_pr(){ # git_create_pr <branch> <title>
     local done_pr=`echo "$git_create_pr_res" | jq -r '.title'`
     if [ ! "$done_pr" == "" ] && [ ! "$done_pr" == "null" ]; then echo 1; else echo 0; fi
 }
-
