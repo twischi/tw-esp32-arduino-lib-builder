@@ -135,6 +135,8 @@ echo -e "      e) Creating Archive-File (compressing...)"
 # Set variables for the archive file tar.gz or zip 
 #---------------------------------------------------------
 targetsBuildList=$(cat $AR_OUT/targetsBuildList.txt) # Get list of targets used for the build
+targetsBuildList=$(echo "$targetsBuildList" | sed 's/, /-/g') # Replace ", " with "-"
+
 idfVersStr="$pioIDF_verStr-$pioAR_verStr"       # Create Version string
 idfVersStr=${idfVersStr//\//_}                  # Remove '/' from string
 pioArchFN="framework-arduinoespressif32-$idfVersStr-$targetsBuildList.tar.gz"    # Name of the archive

@@ -16,7 +16,9 @@ echo "Set Parameters for ./build.sh   by this script >> 'setMyParameters.sh'"
 # Target Chips               (TARGET)      to be build for. Separate them with comma.
 # --------------------------
 #sS+=" -t esp32h2,esp32s3"
-sS+=" -t esp32h2"
+#sS+=" -t esp32h2"
+sS+=" -t esp32s3"
+#sS+=" -t esp32,esp32h2"
 # --------------------------
 # <arduino-esp32>
 # --------------------------
@@ -33,11 +35,11 @@ sS+=" -p $GitHubSources/arduino-esp32"
 # <esp-idf>  
 # --------------------------
 # BRANCH                     (IDF_BRANCH)  for the building.   
-#sS+=" -I release/v5.1"
+sS+=" -I release/v5.1"
 # COMMIT                     (IDF_COMMIT)  for the building.   
 #sS+=" -i '<commit-hash>'"
 # TAG                        (IDF_TAG)     for the building.   
-sS+=" -G v5.1.4"
+#sS+=" -G v5.1.4"
 # FOLDER                     (IDF_PATH)    to store it.          
 sS+=" -f $GitHubSources/esp-idf"
 # DEBUG flag                 (BUILD_DEBUG) for compile with idf.py 
@@ -49,7 +51,7 @@ sS+=" -D info"
 # Build out Folder & post-Build flags
 # ------------------------------------
 #        ~~ NO building  ~   (SKIP_BUILD)   SKIP building for TESTING DEBUGING ONLY
-sS+=" -X"
+#sS+=" -X"
 # OUT    ~~ during build ~~  (AR_OWN_OUT)  to store the build output.
 sS+=" -o $oneUpDir/Out-from_build"
 # Arduino  ~~ post-build ~~  (ESP32_ARDUINO) for use with Arduino.
@@ -96,4 +98,4 @@ set -- $sS
 
 #  <esp32-AR-libs>  https://github.com/espressif/esp32-arduino-libs                   
 # --  Releases    https://github.com/espressif/esp32-arduino-libs/releases
-#                 idf-release_v5.1 (10/2024)
+#                 idf-release/v5.1 (10/2024)
