@@ -33,6 +33,11 @@ It contains modifications in the manner to ...
     ```bash
     sudo pip install --upgrade pip
     ```
+    New module is required for esp-idf
+    ```bash
+    sudo pip install pyclang
+    ```
+
 
 ### Run build on macOS
 

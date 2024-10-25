@@ -16,9 +16,8 @@ echo "Set Parameters for ./build.sh   by this script >> 'setMyParameters.sh'"
 # Target Chips               (TARGET)      to be build for. Separate them with comma.
 # --------------------------
 #sS+=" -t esp32h2,esp32s3"
-#sS+=" -t esp32h2"
-sS+=" -t esp32s3"
-#sS+=" -t esp32,esp32h2"
+sS+=" -t esp32h2"
+#sS+=" -t esp32s3"
 # --------------------------
 # <arduino-esp32>
 # --------------------------
@@ -28,7 +27,7 @@ sS+=" -t esp32s3"
 # COMMIT                     (AR_COMMIT)   for the building.
 #sS+=" -a 2ba3ed3"
 # TAG                        (AR_TAG)      for the building.   
-sS+=" -g 3.0.2"
+sS+=" -g 3.0.6"
 # FOLDER                     (AR_PATH)     to store it.         
 sS+=" -p $GitHubSources/arduino-esp32"
 # --------------------------
