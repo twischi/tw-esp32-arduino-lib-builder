@@ -16,25 +16,27 @@ echo "Set Parameters for ./build.sh   by this script >> 'setMyParameters.sh'"
 # Target Chips               (TARGET)      to be build for. Separate them with comma.
 # --------------------------
 #sS+=" -t esp32h2,esp32s3"
-sS+=" -t esp32h2"
-#sS+=" -t esp32s3"
+#sS+=" -t esp32h2"
+sS+=" -t esp32s3"
 # --------------------------
 # <arduino-esp32>
 # --------------------------
 # BRANCH                     (AR_BRANCH)   for the building.  
+sS+=" -A release/v3.1.x"
 #sS+=" -A idf-release/v5.1"
 #sS+=" -A master"
 # COMMIT                     (AR_COMMIT)   for the building.
 #sS+=" -a 2ba3ed3"
 # TAG                        (AR_TAG)      for the building.   
-sS+=" -g 3.0.6"
+#sS+=" -g 3.0.6"
 # FOLDER                     (AR_PATH)     to store it.         
 sS+=" -p $GitHubSources/arduino-esp32"
 # --------------------------
 # <esp-idf>  
 # --------------------------
 # BRANCH                     (IDF_BRANCH)  for the building.   
-sS+=" -I release/v5.1"
+# sS+=" -I release/v5.1"
+sS+=" -I release/v5.3"
 # COMMIT                     (IDF_COMMIT)  for the building.   
 #sS+=" -i '<commit-hash>'"
 # TAG                        (IDF_TAG)     for the building.   
@@ -82,6 +84,7 @@ set -- $sS
 # <arduino-esp32> Find suitable:
 # --  BRANCH      https://github.com/espressif/arduino-esp32/branches
 #                 master
+#                 release/v3.1.x
 # --  COMMIT      https://github.com/espressif/arduino-esp32/commits/master/
 # --  TAG         https://github.com/espressif/arduino-esp32/tags
 #                 3.0.7 (10/2024) --> IDF 5.1.4
@@ -90,6 +93,7 @@ set -- $sS
 #  <esp-idf>      Find suitable:
 # --  BRANCH      https://github.com/espressif/esp-idf/branches
 #                 release/v5.1
+#                 release/v5.3
 # --  COMMIT      https://github.com/espressif/esp-idf/commits/master/
 # --  TAG         https://github.com/espressif/esp-idf/tags
 #                 v5.1.4 (10/2024)
