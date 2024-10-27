@@ -32,7 +32,7 @@ export SH_ROOT=$(pwd)
 #-----------------------------------------------------------------------------
 # Load the functions extractFileName() > For pretty output of compiler configs
 #source $SH_ROOT/tools/prettiyfiHelpers.sh
-source $SH_ROOT/tools/myToolsEnhancements.sh
+source $SH_ROOT/ownTools/myToolsEnhancements.sh
 #---------------------------
 # Show intro of the build.sh 
 echo -e "\n~~~~~~~~~~~~~~~~~~~~   $eTG Starting of the build.sh $eNO to get the Arduino-Libs    ~~~~~~~~~~~~~~~~~~~~"
@@ -72,21 +72,21 @@ fi
 function print_help() {
     echo "Usage: build.sh [-s] [-A <arduino_branch>] [-I <idf_branch>] [-D <debug_level>] [-i <idf_commit>] [-c <path>] [-t <target>] [-b <build|menuconfig|reconfigure|idf-libs|copy-bootloader|mem-variant>] [config ...]"
     echo 
-    echo "       -p     <arduino-esp32> Set local FOLDER to Arduino-Component instead of components/arduino (AR_PATH)"
+    echo "       -G     <Git-Hub>       Save all downloads from GitHub in ONE folder ../GitHubSources"
+    echo
     echo "       -A     <arduino-esp32> Set BRANCH to be used for compilation (AR_BRANCH)"
     echo "       -a     <arduino-esp32> Set COMMIT to be used for compilation (AR_COMMIT)"
     echo "       -g     <arduino-esp32> Set TAG    to be used for compilation (AR_TAG)"
     echo 
-    echo "       -f     <esp-idf>       Set local FOLDER to ESP-IDF-Component instead of components/esp-idf (IDF_PATH)" 
     echo "       -s     <esp-idf>       SKIP installing/updating of ESP-IDF and all components (SKIP_ENV)=1"
     echo "       -I     <esp-idf>       Set BRANCH to be used for compilation (IDF_BRANCH)"
     echo "       -i     <esp-idf>       Set COMMIT to be used for compilation (IDF_COMMIT)"
-    echo "       -G     <esp-idf>       Set TAG    to be used for compilation (IDF_TAG)"
+    echo "       -T     <esp-idf>       Set TAG    to be used for compilation (IDF_TAG)"
     echo "      ++++    ---------       only '-I' BRANCH <OR> COMMIT '-i' can be used"
     echo "       -D     <esp-idf>       Set DEBUG level compilation. Allowed: default,none,error,warning,info,debug or verbose (BUILD_DEBUG)"
     echo 
     echo "       -t     building        Set target(chip) eg. 'esp32s3' or multiple by separating with comma ex. 'esp32,esp32s3,esp32c3'"
-    echo "       -o     building        Set a OWN Out-Folder, that take building output (AR_OWN_OUT). Works with a simlink, refers to 'normal' out-folder"
+    echo "       -o     building        Set a OWN Out-Folder, that take building output. Works with a simlink, refers to 'normal' out-folder"
     echo "       -X     building        SKIP building for TESTING DEBUGING of creating outputs from buid. Build must be there (SKIP_BUILD)=1"
     echo "       -b     building        Set the build type. ex. 'build' to build the project and prepare for uploading to a board (BUILD_TYPE)"
     echo "       ...                    Specify additional configs to be applied. ex. 'qio 80m' to compile for QIO Flash@80MHz. Requires -b"
@@ -136,7 +136,7 @@ fi
 # Process Arguments were passed
 #-------------------------------
 echo -e "\n--------------------------    1) Given ARGUMENTS Process & Check    -----------------------------"
-while getopts ":A:a:g:p:I:f:i:G:c:o:t:b:D:delsSVWX" opt; do
+while getopts ":A:a:b:c:D:g:i:I:T:t:delosGSVWX" opt; do
     case ${opt} in
         s )
             SKIP_ENV=1
@@ -162,9 +162,9 @@ while getopts ":A:a:g:p:I:f:i:G:c:o:t:b:D:delsSVWX" opt; do
             COPY_OUT=1
             ;;
         o )
-            export AR_OWN_OUT="$OPTARG"
-            echo -e "-o \t..\t Use a own out-Folder (AR_OWN_OUT):"
-            echo -e "\t\t >> '$(shortFP $AR_OWN_OUT)'"
+            echo -e "-o \t..\t Use a own OUT-Folder for build-outputs):"
+            process_OWN_OutFolder_AR
+            echo -e "\t\t >> $ePF'../$(shortFP $AR_Build_Output)'"
             ;;
         A )
             export AR_BRANCH="$OPTARG"
@@ -181,11 +181,10 @@ while getopts ":A:a:g:p:I:f:i:G:c:o:t:b:D:delsSVWX" opt; do
             echo -e "-g  <ar.-esp32>\t Set TAG to be used for compilation (AR_COMMIT):$eTG '$AR_TAG' $eNO"
             pioAR_verStr="AR_tag_$AR_TAG"
             ;;
-        p )
-            Temporarily="$OPTARG"
-            process_OWN_AR_Folder $Temporarily
-            echo -e "-p  <ar.-esp32>\t Set local Arduino-Component Folder (AR_PATH):"
-            echo -e "\t\t >> '$(shortFP $Temporarily)'"
+       G )
+            echo -e "-G  <Git-Hub>\t Save GitHub Download to ONE folder."
+            process_GH_Folder "$Temporarily"            
+            echo -e "\t\t >> $ePF'../$(shortFP $GitHubSources)'"
             ;;
         I )
             export IDF_BRANCH="$OPTARG"
@@ -197,16 +196,10 @@ while getopts ":A:a:g:p:I:f:i:G:c:o:t:b:D:delsSVWX" opt; do
             echo -e "-i  <esp-idf>\t Set COMMIT to be used for compilation (IDF_COMMIT):$eTG '$IDF_COMMIT' $eNO"
             pioIDF_verStr="IDF_$IDF_COMMIT"
             ;;
-        G )
+        T )
             export IDF_TAG="$OPTARG"
             echo -e "-G  <esp-idf>\t Set TAG to be used for compilation (IDF_TAG):$eTG '$IDF_TAG' $eNO"
             pioIDF_verStr="IDF_tag_$IDF_TAG"
-            ;;
-        f )
-            Temporarily="$OPTARG"
-            process_OWN_IDF_Folder $Temporarily 
-            echo -e "-f  <esp-idf>\t Set local IDF-Folder (IDF_PATH):"
-            echo -e "\t\t >> '$(shortFP $Temporarily)'"
             ;;
         D )
             BUILD_DEBUG="$OPTARG"
@@ -348,26 +341,15 @@ fi
 # **********************************************
 echo -e   '--------------------------------- 3) BUILD for Named Targets ------------------------------------'
 # Clean the build- and out- folders
-rm -rf build sdkconfig out # Clean the build folders
-# -----------------------------------------------------
-# Processing own AR_OUT Path with AR_OWN_OUT is given
-# -----------------------------------------------------
-OUT_FOLDER=$AR_OUT
-if [ ! -z $AR_OWN_OUT ]; then
-	# ********  Other out Foder locations ********
-    # Remove all content from AR_OWN_OUT foler
-    rm -rf $AR_OWN_OUT/*
-	mkdir -p $AR_OWN_OUT # Create the Folder if it does not exist
-	# Create a symlink
-	if [ ! -e $AR_OUT ]; then
-		# from  <Source>  to  <target> new Folder that's symlink
-		ln -s   $AR_OWN_OUT   $AR_OUT > /dev/null
-	fi
-    OUT_FOLDER=$AR_OWN_OUT 
-fi
-echo -e "-- Create the Out-folder\n   to: $(shortFP $OUT_FOLDER)"
+rm -rf build sdkconfig # Clean the build folders
+# Special treatment for the out folder as is could be a symlink
+rm -rf out/* # Clean the out folders
+
+Out_RealPath=$(realpath out) 
+echo -e "-- Create the Out-folder\n   to: $(shortFP "$Out_RealPath")"
+
 # Recreate the targetsBuildList.txt file 
-rm -rf $OUT_FOLDER/targetsBuildList.txt && touch $OUT_FOLDER/targetsBuildList.txt
+rm -rf out/targetsBuildList.txt && touch out/targetsBuildList.txt
 # ----------------------------------------------
 # Count the number of POSSIBLE targets to build
 # ----------------------------------------------
@@ -411,7 +393,7 @@ for target_json in `jq -c '.targets[]' configs/builds.json`; do
     targetCount=$((targetCount+1)) # Increment the counter
     echo -e "****************************   Building $targetCount of $activeTargetsCount for Target:$eTG $target $eNO   ***************************"
     echo -e "-- Target Out-folder"
-    echo -e "   to: $(shortFP $OUT_FOLDER/esp32-arduino-libs/)$eTG$target $eNO"
+    echo -e "   to: $(shortFP "$Out_RealPath"/tools/esp32-arduino-libs/)$eTG$target $eNO"
     #-------------------------
     # Build Main Configs List
     #-------------------------
@@ -535,9 +517,9 @@ for target_json in `jq -c '.targets[]' configs/builds.json`; do
     #    targetsBuildList.txt
     #---------------------------------------------
     if [ "$targetCount" -gt 1 ]; then
-        echo -n ", " >> $OUT_FOLDER/targetsBuildList.txt
+        echo -n ", " >> out/targetsBuildList.txt
     fi
-    echo -n "$target" >> $OUT_FOLDER/targetsBuildList.txt
+    echo -n "$target" >> out/targetsBuildList.txt
     echo -e "***************************   FINISHED Building for Target:$eTG $target $eNO   **************************"
 done
 # Clean the build-folder and sdkconfig
@@ -687,8 +669,8 @@ fi # TESTING DEBUGING ONLY - TESTING DEBUGING ONLY - TESTING DEBUGING ONLY
 # >> adapted from GH 'Jason2866/esp32-arduino-lib-builder'
 ##########################################################
 if [ $PIO_OUT_F -eq 1 ]; then
-    echo -e "\n-- 7)$eTG PIO$eNO create File-structure & archive *.tar.gz with >$eUS           /tools/PIO-create-archive.sh$eNO"
-    source $SH_ROOT/tools/PIO-create-archive.sh "$TARGET"
+    echo -e "\n-- 7)$eTG PIO$eNO create File-structure & archive *.tar.gz with >$eUS           /ownTools/PIO-create-archive.sh$eNO"
+    source $SH_ROOT/ownTools/PIO-create-archive.sh "$TARGET"
     if [ $? -ne 0 ]; then exit 1; fi
     osascript -e 'beep 1'
 fi

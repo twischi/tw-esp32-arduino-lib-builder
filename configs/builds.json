@@ -64,10 +64,7 @@
 			"features":[],
 			"idf_libs":["qio","64m"],
 			"bootloaders":[
-				["qio","64m"],
-				["dio","64m"],
-				["qio","16m"],
-				["dio","16m"]
+				["qio","64m"]
 			],
 			"mem_variants":[
 				["dio","64m"]

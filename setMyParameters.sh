@@ -8,16 +8,21 @@
 # from a other scrpt,
 # see: yourBuild_with_log.sh
 # --------------------------------
-oneUpDir=$(realpath $(pwd)/../)        # DIR above the current directory
-GitHubSources=$oneUpDir/GitHub-Sources # GitHub-Sources-Folder
-timeStampAR=$(date +"%Y%m%d_%Hh%Mm")   # Shorter Timestamp for the arduino-esp32 build
 echo "Set Parameters for ./build.sh   by this script >> 'setMyParameters.sh'"
+timeStampAR=$(date +"%Y%m%d_%Hh%Mm")   # Shorter Timestamp for the arduino-esp32 build
 # --------------------------
 # Target Chips               (TARGET)      to be build for. Separate them with comma.
 # --------------------------
 #sS+=" -t esp32h2,esp32s3"
 sS+=" -t esp32h2"
 # sS+=" -t esp32s3"
+# --------------------------
+# Save all downloads from GitHub in ONE folder, affect
+# - arduino-esp32
+# - esp-idf
+# - esp32-arduino-libs
+# --------------------------
+sS+=" -G"
 # --------------------------
 # <arduino-esp32>
 # --------------------------
@@ -29,8 +34,6 @@ sS+=" -A release/v3.1.x"
 #sS+=" -a 2ba3ed3"
 # TAG                        (AR_TAG)      for the building.   
 #sS+=" -g 3.0.6"
-# FOLDER                     (AR_PATH)     to store it.         
-sS+=" -p $GitHubSources/arduino-esp32"
 # --------------------------
 # <esp-idf>  
 # --------------------------
@@ -40,9 +43,7 @@ sS+=" -I release/v5.3"
 # COMMIT                     (IDF_COMMIT)  for the building.   
 #sS+=" -i '<commit-hash>'"
 # TAG                        (IDF_TAG)     for the building.   
-#sS+=" -G v5.1.4"
-# FOLDER                     (IDF_PATH)    to store it.          
-sS+=" -f $GitHubSources/esp-idf"
+#sS+=" -T v5.1.4"
 # DEBUG flag                 (BUILD_DEBUG) for compile with idf.py 
 #                            Allowed: default,none,error,warning,info,debug or verbose (BUILD_DEBUG)
 sS+=" -D info"
@@ -53,8 +54,8 @@ sS+=" -D info"
 # ------------------------------------
 #        ~~ NO building  ~   (SKIP_BUILD)   SKIP building for TESTING DEBUGING ONLY
 #sS+=" -X"
-# OUT    ~~ during build ~~  (AR_OWN_OUT)  to store the build output.
-sS+=" -o $oneUpDir/Out-from_build"
+# OUT    ~~ during build ~~  To store the build outputs to ../OUT-from_build.
+sS+=" -o"
 # Arduino  ~~ post-build ~~  (ESP32_ARDUINO) for use with Arduino.
 #                            Copy the build to Arduino folder
 #                            ' e.g to (ESP32_ARDUINO) '$HOME/Arduino/hardware/espressif/esp32'"
@@ -70,7 +71,7 @@ sS+=" -l"
 # Install/loads              (IDF_InstallSilent) for Load & Install - Components. 
 sS+=" -S"
 # BUILD                      (IDF_BuildTargetSilent) for buildings with idf.py
-#sS+=" -V" 
+sS+=" -V" 
 # Outputs after build        (IDF_BuildInfosSilent) for create output & arrange after build 
 sS+=" -W"
 # ---------------------------
@@ -87,6 +88,7 @@ set -- $sS
 #                 release/v3.1.x
 # --  COMMIT      https://github.com/espressif/arduino-esp32/commits/master/
 # --  TAG         https://github.com/espressif/arduino-esp32/tags
+#                 3.1.0-RC2       --> current ARDUINO IDE 3.1.0-RC2
 #                 3.0.7 (10/2024) --> IDF 5.1.4
 #                 3.0.1           --> IDF 5.1.4 
 
