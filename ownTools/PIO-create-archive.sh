@@ -30,7 +30,7 @@
 SH_ROOT=$(realpath "$(pwd)")           # Root-Folder of the lib builder
 oneUpDir=$(realpath "$(pwd)"/../)      # DIR above the lib builder
 # ... Load the varialbes and functions for pretty output
-source $SH_ROOT/tools/myToolsEnhancements.sh > /dev/null
+source $SH_ROOT/myTools/myToolsEnhancements.sh > /dev/null
 #... Root-Folder for PIO framework outputs
 PIO_Out_DIR=$oneUpDir/PIO-Out 
 mkdir -p "$PIO_Out_DIR"                # Make sure Folder exists

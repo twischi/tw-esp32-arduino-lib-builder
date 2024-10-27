@@ -56,8 +56,8 @@ sS+=" -D info"
 # ------------------------------------
 #        ~~ NO building  ~   (SKIP_BUILD)   SKIP building for TESTING DEBUGING ONLY
 #sS+=" -X"
-# OUT    ~~ during build ~~  (AR_OWN_OUT)  to store the build output.
-sS+=" -o $oneUpDir/Out-from_build"
+# OUT    ~~ during build ~~  To store the build outputs to ../OUT-from_build.
+sS+=" -o"
 # Arduino  ~~ post-build ~~  (ESP32_ARDUINO) for use with Arduino.
 #                            Copy the build to Arduino folder
 #                            ' e.g to (ESP32_ARDUINO) '$HOME/Arduino/hardware/espressif/esp32'"

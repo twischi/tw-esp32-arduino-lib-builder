@@ -27,7 +27,7 @@ process_GH_Folder() {
     GitHubSources=$oneUpDir/GitHub-Sources # GitHub-Sources-Folder
     export GitHubSources
     mkdir -p "$GitHubSources"              # if not exists create the Target-Folder
-    echo GitHubSources="$GitHubSources"
+    #echo GitHubSources="$GitHubSources"
     # -----------------------------------------
     # Set OWN Arduino Folder location (AR_PATH)
     # -----------------------------------------
@@ -57,15 +57,40 @@ process_GH_Folder() {
         fi
     #ls -la "$GitHubSources"
     # echo "Press Enter to continue..." && read
-    }     
-
-# Option '-o' : Set OWN arduino-esp32-BUILD Folder location
+}     
+# Option '-o' : Set OWN arduino-esp32-BUILD Output Folder location
 process_OWN_OutFolder_AR() {
-    export AR_OWN_OUT="$OPTARG"
-    echo -e "-o \t..\t Use a own out-Folder (AR_OWN_OUT):"
-    echo -e "\t\t >> '$(shortFP $AR_OWN_OUT)'"
-    }
+    # ---------------------------------------------------
+    # Set OWN arduino-esp32-BUILD Output Folder location
+    # ---------------------------------------------------
+    local oneUpDir=$(realpath $(pwd)/../)  # Find directory above the current one
+    export AR_Build_Output="$oneUpDir"/"OUT-from_build" # Define Output Folder path
+    mkdir -p "$AR_Build_Output" # if not exists create the Target-Folder
+    local StdOut="$PWD"/out
+    # Check if StdOut folder is already a symlink
+    if [ ! -L "$StdOut" ]; then
+         echo "StdOut NOT a symlink"
+        # Check if StdOut folder exists
+        if [ -d "$StdOut" ]; then
+            # StdOut folder exists
+            echo "StdOut Standard folder EXISTS"
+            rm -rf "$StdOut" # Delete Standard-Target-Folder
+            # >> Create a symlink
+            # from  <Source>          to  <target> new Folder that's symlink
+            ln -s  "$AR_Build_Output"     "$StdOut"  > /dev/null
+        else 
+            # StdOut folder does not exist
+            echo "StdOut Standard folder NOT EXISTS"
+            # >> Create a symlink        
+            # from  <Source>          to  <target> new Folder that's symlink
+            ln -s  "$AR_Build_Output"     "$StdOut"  > /dev/null
+            echo "synlink created"
+        fi
+    fi
+}
+#-------------------------------------------------------------------------------
 # Function to extract file names from semicolon-separated paths and format them
+#-------------------------------------------------------------------------------
 extractFileName() {
     local configs="$1"
     # Convert the semicolon-separated string into an array
