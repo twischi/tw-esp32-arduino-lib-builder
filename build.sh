@@ -32,7 +32,7 @@ export SH_ROOT=$(pwd)
 #-----------------------------------------------------------------------------
 # Load the functions extractFileName() > For pretty output of compiler configs
 #source $SH_ROOT/tools/prettiyfiHelpers.sh
-source $SH_ROOT/myTools/myToolsEnhancements.sh
+source $SH_ROOT/ownTools/myToolsEnhancements.sh
 #---------------------------
 # Show intro of the build.sh 
 echo -e "\n~~~~~~~~~~~~~~~~~~~~   $eTG Starting of the build.sh $eNO to get the Arduino-Libs    ~~~~~~~~~~~~~~~~~~~~"
@@ -670,8 +670,8 @@ fi # TESTING DEBUGING ONLY - TESTING DEBUGING ONLY - TESTING DEBUGING ONLY
 # >> adapted from GH 'Jason2866/esp32-arduino-lib-builder'
 ##########################################################
 if [ $PIO_OUT_F -eq 1 ]; then
-    echo -e "\n-- 7)$eTG PIO$eNO create File-structure & archive *.tar.gz with >$eUS           /myTools/PIO-create-archive.sh$eNO"
-    source $SH_ROOT/myTools/PIO-create-archive.sh "$TARGET"
+    echo -e "\n-- 7)$eTG PIO$eNO create File-structure & archive *.tar.gz with >$eUS           /ownTools/PIO-create-archive.sh$eNO"
+    source $SH_ROOT/ownTools/PIO-create-archive.sh "$TARGET"
     if [ $? -ne 0 ]; then exit 1; fi
     osascript -e 'beep 1'
 fi
