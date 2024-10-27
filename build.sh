@@ -168,7 +168,7 @@ while getopts ":A:a:b:c:D:g:i:I:T:t:delosGSVWX" opt; do
             ;;
         A )
             export AR_BRANCH="$OPTARG"
-            echo -e "-A  <ar.-esp32>\t Set BRANCH to be used for compilation (AR_BRANCH)=$eTG'$AR_BRANCH'$eNO"
+            echo -e "-A  <ar.-esp32>\t Set BRANCH to be used for compilation (AR_BRANCH):$eTG '$AR_BRANCH'$eNO"
             pioAR_verStr="AR_$AR_BRANCH"
             ;;
         a )
