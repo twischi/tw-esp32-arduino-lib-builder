@@ -6,10 +6,10 @@ echo     "...Component ESP32 Arduino installing/updating local copy...."
 # Checks for set Variables AR_COMMIT & AR_BRANCH
 # -----------------------------------------------
 # Check if COMMIT is set >> ALLWAYS WINs!
-if [ ! -z $AR_COMMIT ]; then
+if [ ! -z "$AR_COMMIT" ]; then
 	# YES >> AR_COMMIT is SET 
 	# Check if BRANCH ist set in addition
-	if [ ! -z $AR_BRANCH ]; then
+	if [ ! -z "$AR_BRANCH" ]; then
 		# YES >> AR_BRANCH is SET
 		# Error Message & Exit 
 		echo -e "  $eTG ERROR in Arguments for <arduino-esp32>:"
@@ -85,14 +85,15 @@ fi
 # $?: Status of the last executed command => 0:OK, 1:Error 
 if [ $? -ne 0 ]; then exit 1; fi
 #--------------------------------------------------------
-# Get esp32-arduino-libs COMPONENT
+# Load esp32-arduino-libs the SOURCE CODE
 #--------------------------------------------------------
-if [ ! -d "$IDF_LIBS_DIR" ]; then
-	echo -e "...Cloning esp32-arduino-libs from: $eGI$AR_LIBS_REPO_URL$eNO"
+echo -e "\n-- Load esp32-arduino-libs (SOURCE CODE)"
+if [ ! -d "$IDF_LIBS_DIR" ] || [ -z "$(ls -A "$IDF_LIBS_DIR")" ]; then # if not exists OR EMPTY
+	echo -e "...Cloning from: $eGI$AR_LIBS_REPO_URL$eNO"
 	echo -e "   to: $(shortFP $IDF_LIBS_DIR)"
 	git clone "$AR_LIBS_REPO_URL" "$IDF_LIBS_DIR" --quiet
 else
-	echo -e "...Updating existing esp32-arduino-libs from $eGI$AR_LIBS_REPO_URL$eNO"
+	echo -e "...Updating from $eGI$AR_LIBS_REPO_URL$eNO"
 	echo -e "   in: $(shortFP $(realpath $IDF_LIBS_DIR))"
 	#git -C "$IDF_LIBS_DIR" fetch --quiet && \
 	#git -C "$IDF_LIBS_DIR" pull --quiet --ff-only

@@ -64,9 +64,9 @@ echo -e "         (IDF_COMMIT)= $IDF_COMMIT\t//\t(IDF_BRANCH)= $IDF_BRANCH"
 #----------------------------------------------------------------------
 # CHECKOUT esp32-arduino-libs that has be loaded with Arduino -Install
 #----------------------------------------------------------------------
-# Inherit Branch-Name from <esp-idf>-Branch
-#libsBRANCH="idf-$IDF_BRANCH" # HOPE there is a systematic behind that will work in future too
-libsBRANCH="idf-release/v5.1" # 2024-10-22 above NOT WORKING, set manually 
+if  [ -z "$libsBRANCH" ]; then 
+	libsBRANCH="idf-release/v5.1" # Fallback if not given 2024-10-22
+fi
 echo "...esp32-arduino-libs installing locally ..."
 echo -e "   Checkout Branch:$eTG '$libsBRANCH' $eNO   to: $(shortFP $IDF_LIBS_DIR)"
 git -C "$IDF_LIBS_DIR" checkout $libsBRANCH --quiet
