@@ -182,7 +182,6 @@ while getopts ":A:a:b:c:D:g:i:I:T:t:delosGSVWX" opt; do
             pioAR_verStr="AR_tag_$AR_TAG"
             ;;
        G )
-            #Temporarily="$OPTARG" # Folder for GitHub-Sources download, bundle it THERE
             echo -e "-G  <Git-Hub>\t Save GitHub Download to ONE folder."
             process_GH_Folder "$Temporarily"            
             echo -e "\t\t >> $ePF'../$(shortFP $GitHubSources)'"

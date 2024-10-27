@@ -9,8 +9,6 @@
 # see: yourBuild_with_log.sh
 # --------------------------------
 echo "Set Parameters for ./build.sh   by this script >> 'setMyParameters.sh'"
-oneUpDir=$(realpath $(pwd)/../)        # DIR above the current directory
-GitHubSources=$oneUpDir/GitHub-Sources # GitHub-Sources-Folder
 timeStampAR=$(date +"%Y%m%d_%Hh%Mm")   # Shorter Timestamp for the arduino-esp32 build
 # --------------------------
 # Target Chips               (TARGET)      to be build for. Separate them with comma.
@@ -90,6 +88,7 @@ set -- $sS
 #                 release/v3.1.x
 # --  COMMIT      https://github.com/espressif/arduino-esp32/commits/master/
 # --  TAG         https://github.com/espressif/arduino-esp32/tags
+#                 3.1.0-RC2       --> current ARDUINO IDE 3.1.0-RC2
 #                 3.0.7 (10/2024) --> IDF 5.1.4
 #                 3.0.1           --> IDF 5.1.4 
 

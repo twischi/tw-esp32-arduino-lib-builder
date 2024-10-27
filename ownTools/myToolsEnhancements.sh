@@ -55,8 +55,6 @@ process_GH_Folder() {
             # from  <Source>       to  <target> new Folder that's symlink
             ln -s   "$Temp_PATH"      "$PWD"/esp-idf > /dev/null
         fi
-    #ls -la "$GitHubSources"
-    # echo "Press Enter to continue..." && read
 }     
 # Option '-o' : Set OWN arduino-esp32-BUILD Output Folder location
 process_OWN_OutFolder_AR() {
@@ -120,3 +118,5 @@ shortFP() {
     echo "$ePF$filePathShort$eNO"
 }
 echo "myTools & Enhancements > Variables & Functions loaded successfully."
+
+# echo "Press Enter to continue..." && read
