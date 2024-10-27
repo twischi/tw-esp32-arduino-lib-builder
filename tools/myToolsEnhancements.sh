@@ -20,36 +20,51 @@ export eNO="\x1B[0m"    # Back to    (Black)
 # ---------------------------------------
 # Process enhanced COMMAND-LINE-ARGUMENTS
 # ---------------------------------------
-# Option '-p' : Set OWN Arduino Folder location (AR_PATH)
-process_OWN_AR_Folder() {
-    local AR_PATH="$1" # Parameter 
-    mkdir -p $AR_PATH # if not exists create the Target-Folder
-    # Check if symbolic link at $AR_ROOT/components/arduino NOT exists
-    if [ ! -L $PWD/components/arduino ]; then # >> Create a symlink
-        # from  <Source>       to  <target> new Folder that's symlink
-        ln -s   $AR_PATH      $PWD/components/arduino > /dev/null
-    fi
-    # Modify path to 'esp32-arduino-libs'
-    export IDF_LIBS_DIR=$(realpath $AR_PATH/../)/esp32-arduino-libs
-    }      
-# Option '-f' : Set OWN IDF-Folder location (IDF_PATH)
-process_OWN_IDF_Folder() {
-    local IDF_PATH_OWN="$1" # Parameter 
-	# if not exists create the Target-Folder 
-    mkdir -p "$IDF_PATH_OWN";
-	# Check if symbolic link at $AR_ROOT/esp-idf NOT exists
-	if [ ! -L $PWD/esp-idf ]; then # >> Create a symlink 
-		# from  <Source>       to  <target> new Folder that's symlink
-		ln -s   $IDF_PATH_OWN      $PWD/esp-idf > /dev/null
-	fi
-    }
+# Option '-G' : Save all downloads from GitHub in ONE folder, affect
+# - arduino-esp32 / /- esp-idf / - esp32-arduino-libs
+process_GH_Folder() {
+    local oneUpDir=$(realpath $(pwd)/../)  # Find directory above the current one
+    GitHubSources=$oneUpDir/GitHub-Sources # GitHub-Sources-Folder
+    export GitHubSources
+    mkdir -p "$GitHubSources"              # if not exists create the Target-Folder
+    echo GitHubSources="$GitHubSources"
+    # -----------------------------------------
+    # Set OWN Arduino Folder location (AR_PATH)
+    # -----------------------------------------
+        local Temp_PATH="$GitHubSources""/arduino-esp32" # New Location
+        mkdir -p "$Temp_PATH" # if not exists create the Target-Folder
+        # Check if symbolic link at $AR_ROOT/components/arduino NOT exists
+        if [ ! -L "$PWD"/components/arduino ]; then # >> Create a symlink
+            # from  <Source>       to  <target> new Folder that's symlink
+            ln -s   "$Temp_PATH"       "$PWD"/components/arduino > /dev/null
+        fi
+    # ----------------------------------------------
+    # Set OWN Arduino Folder location (IDF_LIBS_DIR)
+    # ----------------------------------------------
+        local Temp_PATH="$GitHubSources""/esp32-arduino-libs" # New Location
+        mkdir -p "$Temp_PATH" # if not exists create the Target-Folder
+        # Modify path to 'esp32-arduino-libs'
+        export IDF_LIBS_DIR=$(realpath "$Temp_PATH"/../)/esp32-arduino-libs
+    # -----------------------------------------
+    # Set OWN IDF-Folder location (IDF_PATH)
+    # -----------------------------------------
+        local Temp_PATH="$GitHubSources""/esp-idf" # New Location
+        mkdir -p "$Temp_PATH" # if not exists create the Target-Folder
+        # Check if symbolic link at $AR_ROOT/esp-idf NOT exists
+        if [ ! -L $PWD/esp-idf ]; then # >> Create a symlink 
+            # from  <Source>       to  <target> new Folder that's symlink
+            ln -s   "$Temp_PATH"      "$PWD"/esp-idf > /dev/null
+        fi
+    #ls -la "$GitHubSources"
+    # echo "Press Enter to continue..." && read
+    }     
+
 # Option '-o' : Set OWN arduino-esp32-BUILD Folder location
 process_OWN_OutFolder_AR() {
     export AR_OWN_OUT="$OPTARG"
     echo -e "-o \t..\t Use a own out-Folder (AR_OWN_OUT):"
     echo -e "\t\t >> '$(shortFP $AR_OWN_OUT)'"
-    }   
-
+    }
 # Function to extract file names from semicolon-separated paths and format them
 extractFileName() {
     local configs="$1"

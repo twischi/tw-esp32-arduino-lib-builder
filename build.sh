@@ -72,16 +72,16 @@ fi
 function print_help() {
     echo "Usage: build.sh [-s] [-A <arduino_branch>] [-I <idf_branch>] [-D <debug_level>] [-i <idf_commit>] [-c <path>] [-t <target>] [-b <build|menuconfig|reconfigure|idf-libs|copy-bootloader|mem-variant>] [config ...]"
     echo 
-    echo "       -p     <arduino-esp32> Set local FOLDER to Arduino-Component instead of components/arduino (AR_PATH)"
+    echo "       -G     <Git-Hub>       Save all downloads from GitHub in ONE folder ../GitHubSources"
+    echo
     echo "       -A     <arduino-esp32> Set BRANCH to be used for compilation (AR_BRANCH)"
     echo "       -a     <arduino-esp32> Set COMMIT to be used for compilation (AR_COMMIT)"
     echo "       -g     <arduino-esp32> Set TAG    to be used for compilation (AR_TAG)"
     echo 
-    echo "       -f     <esp-idf>       Set local FOLDER to ESP-IDF-Component instead of components/esp-idf (IDF_PATH)" 
     echo "       -s     <esp-idf>       SKIP installing/updating of ESP-IDF and all components (SKIP_ENV)=1"
     echo "       -I     <esp-idf>       Set BRANCH to be used for compilation (IDF_BRANCH)"
     echo "       -i     <esp-idf>       Set COMMIT to be used for compilation (IDF_COMMIT)"
-    echo "       -G     <esp-idf>       Set TAG    to be used for compilation (IDF_TAG)"
+    echo "       -T     <esp-idf>       Set TAG    to be used for compilation (IDF_TAG)"
     echo "      ++++    ---------       only '-I' BRANCH <OR> COMMIT '-i' can be used"
     echo "       -D     <esp-idf>       Set DEBUG level compilation. Allowed: default,none,error,warning,info,debug or verbose (BUILD_DEBUG)"
     echo 
@@ -136,7 +136,7 @@ fi
 # Process Arguments were passed
 #-------------------------------
 echo -e "\n--------------------------    1) Given ARGUMENTS Process & Check    -----------------------------"
-while getopts ":A:a:g:p:I:f:i:G:c:o:t:b:D:delsSVWX" opt; do
+while getopts ":A:a:b:c:D:g:i:I:o:T:t:delsGSVWX" opt; do
     case ${opt} in
         s )
             SKIP_ENV=1
@@ -181,11 +181,11 @@ while getopts ":A:a:g:p:I:f:i:G:c:o:t:b:D:delsSVWX" opt; do
             echo -e "-g  <ar.-esp32>\t Set TAG to be used for compilation (AR_COMMIT):$eTG '$AR_TAG' $eNO"
             pioAR_verStr="AR_tag_$AR_TAG"
             ;;
-        p )
-            Temporarily="$OPTARG"
-            process_OWN_AR_Folder $Temporarily
-            echo -e "-p  <ar.-esp32>\t Set local Arduino-Component Folder (AR_PATH):"
-            echo -e "\t\t >> '$(shortFP $Temporarily)'"
+       G )
+            #Temporarily="$OPTARG" # Folder for GitHub-Sources download, bundle it THERE
+            echo -e "-G  <Git-Hub>\t Save GitHub Download to ONE folder."
+            process_GH_Folder "$Temporarily"            
+            echo -e "\t\t >> $ePF'../$(shortFP $GitHubSources)'"
             ;;
         I )
             export IDF_BRANCH="$OPTARG"
@@ -197,16 +197,10 @@ while getopts ":A:a:g:p:I:f:i:G:c:o:t:b:D:delsSVWX" opt; do
             echo -e "-i  <esp-idf>\t Set COMMIT to be used for compilation (IDF_COMMIT):$eTG '$IDF_COMMIT' $eNO"
             pioIDF_verStr="IDF_$IDF_COMMIT"
             ;;
-        G )
+        T )
             export IDF_TAG="$OPTARG"
             echo -e "-G  <esp-idf>\t Set TAG to be used for compilation (IDF_TAG):$eTG '$IDF_TAG' $eNO"
             pioIDF_verStr="IDF_tag_$IDF_TAG"
-            ;;
-        f )
-            Temporarily="$OPTARG"
-            process_OWN_IDF_Folder $Temporarily 
-            echo -e "-f  <esp-idf>\t Set local IDF-Folder (IDF_PATH):"
-            echo -e "\t\t >> '$(shortFP $Temporarily)'"
             ;;
         D )
             BUILD_DEBUG="$OPTARG"

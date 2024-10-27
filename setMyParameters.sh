@@ -8,16 +8,23 @@
 # from a other scrpt,
 # see: yourBuild_with_log.sh
 # --------------------------------
+echo "Set Parameters for ./build.sh   by this script >> 'setMyParameters.sh'"
 oneUpDir=$(realpath $(pwd)/../)        # DIR above the current directory
 GitHubSources=$oneUpDir/GitHub-Sources # GitHub-Sources-Folder
 timeStampAR=$(date +"%Y%m%d_%Hh%Mm")   # Shorter Timestamp for the arduino-esp32 build
-echo "Set Parameters for ./build.sh   by this script >> 'setMyParameters.sh'"
 # --------------------------
 # Target Chips               (TARGET)      to be build for. Separate them with comma.
 # --------------------------
 #sS+=" -t esp32h2,esp32s3"
 sS+=" -t esp32h2"
 # sS+=" -t esp32s3"
+# --------------------------
+# Save all downloads from GitHub in ONE folder, affect
+# - arduino-esp32
+# - esp-idf
+# - esp32-arduino-libs
+# --------------------------
+sS+=" -G"
 # --------------------------
 # <arduino-esp32>
 # --------------------------
@@ -29,8 +36,6 @@ sS+=" -A release/v3.1.x"
 #sS+=" -a 2ba3ed3"
 # TAG                        (AR_TAG)      for the building.   
 #sS+=" -g 3.0.6"
-# FOLDER                     (AR_PATH)     to store it.         
-sS+=" -p $GitHubSources/arduino-esp32"
 # --------------------------
 # <esp-idf>  
 # --------------------------
@@ -40,9 +45,7 @@ sS+=" -I release/v5.3"
 # COMMIT                     (IDF_COMMIT)  for the building.   
 #sS+=" -i '<commit-hash>'"
 # TAG                        (IDF_TAG)     for the building.   
-#sS+=" -G v5.1.4"
-# FOLDER                     (IDF_PATH)    to store it.          
-sS+=" -f $GitHubSources/esp-idf"
+#sS+=" -T v5.1.4"
 # DEBUG flag                 (BUILD_DEBUG) for compile with idf.py 
 #                            Allowed: default,none,error,warning,info,debug or verbose (BUILD_DEBUG)
 sS+=" -D info"
@@ -70,7 +73,7 @@ sS+=" -l"
 # Install/loads              (IDF_InstallSilent) for Load & Install - Components. 
 sS+=" -S"
 # BUILD                      (IDF_BuildTargetSilent) for buildings with idf.py
-#sS+=" -V" 
+sS+=" -V" 
 # Outputs after build        (IDF_BuildInfosSilent) for create output & arrange after build 
 sS+=" -W"
 # ---------------------------
